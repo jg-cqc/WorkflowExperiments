@@ -77,7 +77,7 @@ CLEAR="\e[0m"
 
 function fnInstallDependencies()
 {
-	echo "TODO: fnInstallDependencies"
+	echo -e "TODO: fnInstallDependencies"
 }
 
 function fnGetCrossCompileDependencies()
@@ -88,18 +88,18 @@ function fnGetCrossCompileDependencies()
 
 function fnQuickBuild()
 {
-	echo "TODO: fnQuickBuild"
+	echo -e "TODO: fnQuickBuild"
 }
 
 function fnBuild()
 {
-	echo "TODO: fnBuild"
+	echo -e "TODO: fnBuild"
 	#fnRunEndtoEndTests
 }
 
 function fnRebuild()
 {
-	echo "TODO: fnRebuild"
+	echo -e "TODO: fnRebuild"
 	rm -rf bin lib build
 }
 
@@ -112,7 +112,7 @@ function fnTests()
 {
 	erc=0 # Initialise error code to "success"
 
-	echo "${BOLD1}*** Running Tests${CLEAR}"
+	echo -e "${BOLD1}*** Running Tests${CLEAR}"
 	pushd tests
 
 	echo -e "${BLUE_BG}--- UnitTests${CLEAR}"
@@ -125,7 +125,7 @@ function fnTests()
 	../build/bin/IntegrationTests || erc=1
 
 	popd
-	echo "${BOLD1}*** Tests Done${CLEAR}"
+	echo -e "${BOLD1}*** Tests Done${CLEAR}"
 
 	fnSimpleCLITests || erc=1
 
@@ -136,14 +136,14 @@ function fnSimpleCLITests()
 {
 	erc=0 # Initialise error code to "success"
 
-	echo "${BOLD1}*** Cleaning SimpleCLI_c Tests${CLEAR}"
+	echo -e "${BOLD1}*** Cleaning SimpleCLI_c Tests${CLEAR}"
 	rm -f ./build/bin/qo_onboard_simple_cli_c
 	rm -f ./build/bin/qo_onboard_simple_cli_using_setoptions_c
 
-	echo "${BOLD1}*** Building SimpleCLI_c Tests${CLEAR}"
+	echo -e "${BOLD1}*** Building SimpleCLI_c Tests${CLEAR}"
 	fnQuickBuild
 
-	echo "${BOLD1}*** Running SimpleCLI_c Tests${CLEAR}"
+	echo -e "${BOLD1}*** Running SimpleCLI_c Tests${CLEAR}"
 	pushd tests
 
 	echo -e "${BLUE_BG}--- qo_onboard_simple_cli_c (hexdump)${CLEAR}"
@@ -159,7 +159,7 @@ function fnSimpleCLITests()
 	../build/bin/qo_onboard_simple_cli_using_setoptions_c 400 | ent || erc=1
 
 	popd
-	echo "${BOLD1}*** Tests Done${CLEAR}"
+	echo -e "${BOLD1}*** Tests Done${CLEAR}"
 
 	return $erc
 }
@@ -270,7 +270,7 @@ function fnInstall_QuantumOriginOnboardFromGithub()
 	# Ensure that we have the tarball here with us
 	for i in qo_onboard_*.tgz; do
 		if [ ! -f "$i" ]; then
-			echo "ERROR: Failed to retrieve qo_onboard_*.gz published tarball. Exiting."
+			echo -e "ERROR: Failed to retrieve qo_onboard_*.gz published tarball. Exiting."
 			exit 1
 		fi
 	done
@@ -294,11 +294,11 @@ function fnSampleCodeCreateTarball()
 	PACKAGE_LIBRARY_BINARIES="${3}"
 	PACKAGE_SAMPLE_BINARIES="${4}"
 	PACKAGE_HTML_DOCUMENTATION="${5}"
-	echo "    PROJECT_ROOTDIR            = ${PROJECT_ROOTDIR}"
-	echo "    PACKAGE_DIR                = ${PACKAGE_DIR}"
-	echo "    PACKAGE_LIBRARY_BINARIES   = ${PACKAGE_LIBRARY_BINARIES}"
-	echo "    PACKAGE_SAMPLE_BINARIES    = ${PACKAGE_SAMPLE_BINARIES}"
-	echo "    PACKAGE_HTML_DOCUMENTATION = ${PACKAGE_HTML_DOCUMENTATION}"
+	echo -e "    PROJECT_ROOTDIR            = ${PROJECT_ROOTDIR}"
+	echo -e "    PACKAGE_DIR                = ${PACKAGE_DIR}"
+	echo -e "    PACKAGE_LIBRARY_BINARIES   = ${PACKAGE_LIBRARY_BINARIES}"
+	echo -e "    PACKAGE_SAMPLE_BINARIES    = ${PACKAGE_SAMPLE_BINARIES}"
+	echo -e "    PACKAGE_HTML_DOCUMENTATION = ${PACKAGE_HTML_DOCUMENTATION}"
 
 	rm -rf "${PACKAGE_DIR}/"
 	mkdir -p "${PACKAGE_DIR}/"
@@ -391,12 +391,12 @@ function fnPackageSampleCode
 	fnGetDistro
 	CMAKE_BUILD_PLATFORM=${OS_DISTRO_NAME}_${OS_DISTRO_RELEASE} # e.g. "Ubuntu_20.04" or "CentOS_7.9.2009"
 	CMAKE_TARGET_PLATFORM=${OS_DISTRO_NAME}_${OS_DISTRO_RELEASE} # e.g. "Ubuntu_20.04" or "CentOS_7.9.2009" or "Windows_10.0"
-	echo "CMAKE_BUILD_PLATFORM  = ${CMAKE_BUILD_PLATFORM}"
-	echo "CMAKE_TARGET_PLATFORM = ${CMAKE_TARGET_PLATFORM}"
+	echo -e "CMAKE_BUILD_PLATFORM  = ${CMAKE_BUILD_PLATFORM}"
+	echo -e "CMAKE_TARGET_PLATFORM = ${CMAKE_TARGET_PLATFORM}"
 
 	#CMAKE_BUILD_TYPE=Debug
 	CMAKE_BUILD_TYPE=Release
-	echo "CMAKE_BUILD_TYPE      = ${CMAKE_BUILD_TYPE}"
+	echo -e "CMAKE_BUILD_TYPE      = ${CMAKE_BUILD_TYPE}"
 
 	echo -e "--- [fnBuildAndTest] PublishTarballPackage..."
 	fnSampleCodeCreateTarball . ./build/package_sample_code true false false
@@ -404,31 +404,31 @@ function fnPackageSampleCode
 
 function fnBuildAndRunSampleCode() # DeveloperTrack
 {
-	echo "${BOLD1}*** Package, install, build and run sample code${CLEAR}"
+	echo -e "${BOLD1}*** Package, install, build and run sample code${CLEAR}"
 
-	echo "${BOLD1}*** Decompress tarball to INSTALL_TARGET - typically ~/quantum-origin-onboard${CLEAR}"
+	echo -e "${BOLD1}*** Decompress tarball to INSTALL_TARGET - typically ~/quantum-origin-onboard${CLEAR}"
 	rm -rf ./build/package_sample_code/
 	fnPackageSampleCode
 
-	echo "${BOLD1}*** Unzip tarball to INSTALL_TARGET - typically ~/quantum-origin-onboard${CLEAR}"
+	echo -e "${BOLD1}*** Unzip tarball to INSTALL_TARGET - typically ~/quantum-origin-onboard${CLEAR}"
 	pushd ./build/package_sample_code
 	rm -rf ~/quantum-origin-onboard/
 	./qoo_samples_install.sh
 	popd
 
-	echo "${BOLD1}*** Build sample code${CLEAR}"
+	echo -e "${BOLD1}*** Build sample code${CLEAR}"
 	pushd ~/quantum-origin-onboard/
 	rm -f ./*.o ./*.out
 	rm -rf ${INSTALL_TARGET}
 	./qoo_samples_build.sh
 	popd
 
-	echo "${BOLD1}*** Running sample code${CLEAR}"
+	echo -e "${BOLD1}*** Running sample code${CLEAR}"
 	pushd ~/quantum-origin-onboard/
 	./qoo_samples_run.sh
 	popd
 
-	echo "${BOLD1}*** Done${CLEAR}"
+	echo -e "${BOLD1}*** Done${CLEAR}"
 }
 
 #########################################
@@ -440,18 +440,18 @@ function fnBuildAndRunSampleCode() # DeveloperTrack
 ###################################
 function fnHelp()
 {
-	echo "${BOLD1}**********************************************${CLEAR}"
-	echo "${BOLD1}*** Project: QuantumOrigin.Library.Onboard${CLEAR}"
-	echo "${BOLD1}*** File   : build_and_deploy.sh${CLEAR}"
-	echo "${BOLD1}*** Usage  : build_and_deploy.sh [arg]${CLEAR}"
-	echo "${BOLD1}*** arg    : help${CLEAR}"
-	echo "${BOLD1}***          install_clang15 | install_deps | install_cross_deps${CLEAR}"
-	echo "${BOLD1}***          build | quickbuild | build_aarch64 | build_armhf | build_windows${CLEAR}"
-	echo "${BOLD1}***          build_release | build_aarch64_release | build_armhf_release | build_windows_release${CLEAR}"
-	echo "${BOLD1}***          publish | publish_windows${CLEAR}"
-	echo "${BOLD1}***          tests | simpleclitests | sample_code${CLEAR}"
-	echo "${BOLD1}***          clean | clean_all${CLEAR}"
-	echo "${BOLD1}**********************************************${CLEAR}"
+	echo -e "${BOLD1}**********************************************${CLEAR}"
+	echo -e "${BOLD1}*** Project: QuantumOrigin.Library.Onboard${CLEAR}"
+	echo -e "${BOLD1}*** File   : build_and_deploy.sh${CLEAR}"
+	echo -e "${BOLD1}*** Usage  : build_and_deploy.sh [arg]${CLEAR}"
+	echo -e "${BOLD1}*** arg    : help${CLEAR}"
+	echo -e "${BOLD1}***          install_clang15 | install_deps | install_cross_deps${CLEAR}"
+	echo -e "${BOLD1}***          build | quickbuild | build_aarch64 | build_armhf | build_windows${CLEAR}"
+	echo -e "${BOLD1}***          build_release | build_aarch64_release | build_armhf_release | build_windows_release${CLEAR}"
+	echo -e "${BOLD1}***          publish | publish_windows${CLEAR}"
+	echo -e "${BOLD1}***          tests | simpleclitests | sample_code${CLEAR}"
+	echo -e "${BOLD1}***          clean | clean_all${CLEAR}"
+	echo -e "${BOLD1}**********************************************${CLEAR}"
 }
 
 
@@ -461,7 +461,7 @@ function fnHelp()
 PROJECTNAME="[QOOnboard]"
 TARGET_NAME=qoonboard
 
-echo "${BOLD3}*** $0 : ${PROJECTNAME} build script ***${CLEAR}"
+echo -e "${BOLD3}*** $0 : ${PROJECTNAME} build script ***${CLEAR}"
 
 if [[ "$1" = "help" ]]                                               ; then fnHelp
 elif [[ "$1" = "install_deps" || "$1" = "installdeps" ]]             ; then fnInstallDependencies                                   ; echo -e "\e[96m--- Done\e[0m"
