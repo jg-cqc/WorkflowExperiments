@@ -14,23 +14,26 @@
 set -e
 
 # DECLARE SOME CONSTANTS
-# When $TERM is empty (non-interactive shell e.g. github actions/CI), then expand tput with ' -T xterm-256color'
-[[ ${TERM} == "" ]] && TPUTTERM=' -T xterm-256color' || TPUTTERM=''
-BOLD1=$(tput${TPUTTERM} bold)
-BOLD3=$(tput${TPUTTERM} bold)
-
-BOLD_GREY="$(   tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 0)" # Grey
-BOLD_RED="$(    tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 1)" # Red
-BOLD_GREEN="$(  tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 2)" # Green  i.e. # Set Forground to Bold + Green(ANSI 2). Equivalent to "$(tput bold green)"
-BOLD_BROWN="$(  tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 3)" # Brown (not yellow - and I have no reason why not)
-BOLD_BLUE="$(   tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 4)" # Blue
-BOLD_MAGENTA="$(tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 5)" # Magenta
-BOLD_CYAN="$(   tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 6)" # Cyan   i.e. Set Forground to Bold + Cyan(ANSI 6). Equivalent to "$(tput bold cyan)"
-CLEAR=$(tput${TPUTTERM} sgr0)
+#     # When $TERM is empty (non-interactive shell e.g. github actions/CI), then expand tput with ' -T xterm-256color'
+#     [[ ${TERM} == "" ]] && TPUTTERM=' -T xterm-256color' || TPUTTERM=''
+#     BOLD1=$(tput${TPUTTERM} bold)
+#     BOLD3=$(tput${TPUTTERM} bold)
+#
+#     BOLD_GREY="$(   tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 0)" # Grey
+#     BOLD_RED="$(    tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 1)" # Red
+#     BOLD_GREEN="$(  tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 2)" # Green  i.e. # Set Forground to Bold + Green(ANSI 2). Equivalent to "$(tput bold green)"
+#     BOLD_BROWN="$(  tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 3)" # Brown (not yellow - and I have no reason why not)
+#     BOLD_BLUE="$(   tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 4)" # Blue
+#     BOLD_MAGENTA="$(tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 5)" # Magenta
+#     BOLD_CYAN="$(   tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 6)" # Cyan   i.e. Set Forground to Bold + Cyan(ANSI 6). Equivalent to "$(tput bold cyan)"
+#     CLEAR=$(tput${TPUTTERM} sgr0)
 
 BROWN_FG="\e[33m"
 BROWN_BG="\e[43m"
 BLUE_BG="\e[44m"
+
+BOLD1="\e[43m"
+CLEAR="\e[0m"
 
 
 # Bright Green:
