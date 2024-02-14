@@ -13,24 +13,64 @@
 # Halt on error
 set -e
 
-# Avoid "tput: No value for $TERM and no -T specified" on CI
-if [ -z "${TERM+x}" ]; then
-    echo "TERM is unset";
-	#TERM=dumb
-	TERM=xterm
-elif [[ -z "$TERM" ]]; then
-    echo "TERM is empty"
-	#TERM=dumb
-	TERM=xterm
-else
-    echo "TERM is set to '${TERM}'"
-fi
+# DECLARE SOME CONSTANTS
+# When $TERM is empty (non-interactive shell e.g. github actions/CI), then expand tput with ' -T xterm-256color'
+[[ ${TERM} == "" ]] && TPUTTERM=' -T xterm-256color' || TPUTTERM=''
+BOLD1=$(tput${TPUTTERM} bold)
+BOLD3=$(tput${TPUTTERM} bold)
 
-BOLD1=$(tput bold)
+BOLD_GREY="$(   tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 0)" # Grey
+BOLD_RED="$(    tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 1)" # Red
+BOLD_GREEN="$(  tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 2)" # Green  i.e. # Set Forground to Bold + Green(ANSI 2). Equivalent to "$(tput bold green)"
+BOLD_BROWN="$(  tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 3)" # Brown (not yellow - and I have no reason why not)
+BOLD_BLUE="$(   tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 4)" # Blue
+BOLD_MAGENTA="$(tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 5)" # Magenta
+BOLD_CYAN="$(   tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 6)" # Cyan   i.e. Set Forground to Bold + Cyan(ANSI 6). Equivalent to "$(tput bold cyan)"
+CLEAR=$(tput${TPUTTERM} sgr0)
+
 BROWN_FG="\e[33m"
 BROWN_BG="\e[43m"
 BLUE_BG="\e[44m"
-CLEAR=$(tput sgr0)
+
+
+# Bright Green:
+# Escape can be \e or \u001b
+#                   Reset       : \e[0m
+#                   Black       : \e[30m
+#                   Red         : \e[31m
+#                   Green       : \e[32m
+#                   Yellow      : \e[33m
+#                   Blue        : \e[34m
+#                   Magenta     : \e[35m
+#                   Cyan        : \e[36m
+#                   White       : \e[37m
+#            Bright Black       : \e[30;1m
+#            Bright Red         : \e[31;1m
+#            Bright Green       : \e[32;1m    [... or \e[96 ? (64+32) ]
+#            Bright Yellow      : \e[33;1m
+#            Bright Blue        : \e[34;1m
+#            Bright Magenta     : \e[35;1m
+#            Bright Cyan        : \e[36;1m
+#            Bright White       : \e[37;1m
+# Background        Black       : \e[40m
+# Background        Red         : \e[41m
+# Background        Green       : \e[42m
+# Background        Yellow      : \e[43m
+# Background        Blue        : \e[44m
+# Background        Magenta     : \e[45m
+# Background        Cyan        : \e[46m
+# Background        White       : \e[47m
+# Background Bright Black       : \e[40;1m
+# Background Bright Red         : \e[41;1m
+# Background Bright Green       : \e[42;1m
+# Background Bright Yellow      : \e[43;1m
+# Background Bright Blue        : \e[44;1m
+# Background Bright Magenta     : \e[45;1m
+# Background Bright Cyan        : \e[46;1m
+# Background Bright White       : \e[47;1m
+
+
+
 
 function fnInstallDependencies()
 {
