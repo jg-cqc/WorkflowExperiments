@@ -15,13 +15,15 @@ set -e
 
 # Avoid "tput: No value for $TERM and no -T specified" on CI
 if [ -z "${TERM+x}" ]; then
-    # echo "TERM is unset";
+    echo "TERM is unset";
 	TERM=dumb
 	#TERM=xterm
 elif [[ -z "$TERM" ]]; then
-    # echo "TERM is empty"
+    echo "TERM is empty"
 	TERM=dumb
 	#TERM=xterm
+else
+    echo "TERM is set to '${TERM}'"
 fi
 
 BOLD1=$(tput bold)
