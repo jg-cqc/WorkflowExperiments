@@ -32,7 +32,9 @@ BROWN_FG="\e[33m"
 BROWN_BG="\e[43m"
 BLUE_BG="\e[44m"
 
-BOLD1="\e[43m"
+BOLD1="\e[47;1m"
+BOLD2="\e[42;1m"
+BOLD3="\e[43;1m"
 CLEAR="\e[0m"
 
 
@@ -77,7 +79,7 @@ CLEAR="\e[0m"
 
 function fnInstallDependencies()
 {
-	echo -e "TODO: fnInstallDependencies"
+	echo -e "${BOLD2}TODO: fnInstallDependencies"
 }
 
 function fnGetCrossCompileDependencies()
@@ -88,18 +90,18 @@ function fnGetCrossCompileDependencies()
 
 function fnQuickBuild()
 {
-	echo -e "TODO: fnQuickBuild"
+	echo -e "${BOLD2}TODO: fnQuickBuild"
 }
 
 function fnBuild()
 {
-	echo -e "TODO: fnBuild"
+	echo -e "${BOLD2}TODO: fnBuild"
 	#fnRunEndtoEndTests
 }
 
 function fnRebuild()
 {
-	echo -e "TODO: fnRebuild"
+	echo -e "${BOLD2}TODO: fnRebuild"
 	rm -rf bin lib build
 }
 
@@ -270,7 +272,7 @@ function fnInstall_QuantumOriginOnboardFromGithub()
 	# Ensure that we have the tarball here with us
 	for i in qo_onboard_*.tgz; do
 		if [ ! -f "$i" ]; then
-			echo -e "ERROR: Failed to retrieve qo_onboard_*.gz published tarball. Exiting."
+			echo -e "${BOLD_ERROR}ERROR: Failed to retrieve qo_onboard_*.gz published tarball. Exiting."
 			exit 1
 		fi
 	done
@@ -286,26 +288,26 @@ function fnInstall_QuantumOriginOnboardFromGithub()
 # -------------------------------------------------------------------------
 function fnSampleCodeCreateTarball()
 {
-	echo -e "--- --------------------------------------------------------------------------------------------------------------------"
-	echo -e "--- fnSampleCodeCreateTarball - BEGIN"
+	echo -e "${BOLD2}--- --------------------------------------------------------------------------------------------------------------------"
+	echo -e "${BOLD2}--- fnSampleCodeCreateTarball - BEGIN"
 
 	PROJECT_ROOTDIR="${1}"
 	PACKAGE_DIR="${2}"
 	PACKAGE_LIBRARY_BINARIES="${3}"
 	PACKAGE_SAMPLE_BINARIES="${4}"
 	PACKAGE_HTML_DOCUMENTATION="${5}"
-	echo -e "    PROJECT_ROOTDIR            = ${PROJECT_ROOTDIR}"
-	echo -e "    PACKAGE_DIR                = ${PACKAGE_DIR}"
-	echo -e "    PACKAGE_LIBRARY_BINARIES   = ${PACKAGE_LIBRARY_BINARIES}"
-	echo -e "    PACKAGE_SAMPLE_BINARIES    = ${PACKAGE_SAMPLE_BINARIES}"
-	echo -e "    PACKAGE_HTML_DOCUMENTATION = ${PACKAGE_HTML_DOCUMENTATION}"
+	echo -e "${BOLD2}    PROJECT_ROOTDIR            = ${PROJECT_ROOTDIR}"
+	echo -e "${BOLD2}    PACKAGE_DIR                = ${PACKAGE_DIR}"
+	echo -e "${BOLD2}    PACKAGE_LIBRARY_BINARIES   = ${PACKAGE_LIBRARY_BINARIES}"
+	echo -e "${BOLD2}    PACKAGE_SAMPLE_BINARIES    = ${PACKAGE_SAMPLE_BINARIES}"
+	echo -e "${BOLD2}    PACKAGE_HTML_DOCUMENTATION = ${PACKAGE_HTML_DOCUMENTATION}"
 
 	rm -rf "${PACKAGE_DIR}/"
 	mkdir -p "${PACKAGE_DIR}/"
 
 	if "${PACKAGE_LIBRARY_BINARIES}"
 	then
-		echo -e "--- Packaging library binaries..."
+		echo -e "${BOLD2}--- Packaging library binaries..."
 		mkdir -p "${PACKAGE_DIR}/lib/"
 		cp ${PROJECT_ROOTDIR}/build/src/qo_onboard_c/libqo_onboard_c.a                   ${PACKAGE_DIR}/lib
 		cp ${PROJECT_ROOTDIR}/build/src/qo_onboard_c/libqo_onboard_library.so            ${PACKAGE_DIR}/lib
@@ -317,7 +319,7 @@ function fnSampleCodeCreateTarball()
 
 	if "${PACKAGE_HTML_DOCUMENTATION}"
 	then
-		echo -e "--- Packaging documentation..."
+		echo -e "${BOLD2}--- Packaging documentation..."
 		cp -r  ${PROJECT_ROOTDIR}/documentation/public/latest/      ${PACKAGE_DIR}
 		mv ${PACKAGE_DIR}/latest ${PACKAGE_DIR}/documentation
 	fi
@@ -338,7 +340,7 @@ function fnSampleCodeCreateTarball()
 
 	if "${PACKAGE_SAMPLE_BINARIES}"
 	then
-		echo -e "--- Packaging sample binaries..."
+		echo -e "${BOLD2}--- Packaging sample binaries..."
 		mkdir -p ${PACKAGE_DIR}/bin
 		cp ${PROJECT_ROOTDIR}/build/bin/qo_onboard_sample_code_A_using_config_file    ${PACKAGE_DIR}/bin/
 		cp ${PROJECT_ROOTDIR}/build/bin/qo_onboard_sample_code_B_using_setopt_api     ${PACKAGE_DIR}/bin/
@@ -383,7 +385,7 @@ function fnSampleCodeCreateTarball()
 		rm -rf ${PACKAGE_DIR}/bin/
 	fi
 
-	echo -e "--- fnSampleCodeCreateTarball - END"
+	echo -e "${BOLD2}--- fnSampleCodeCreateTarball - END"
 }
 
 function fnPackageSampleCode
@@ -391,14 +393,14 @@ function fnPackageSampleCode
 	fnGetDistro
 	CMAKE_BUILD_PLATFORM=${OS_DISTRO_NAME}_${OS_DISTRO_RELEASE} # e.g. "Ubuntu_20.04" or "CentOS_7.9.2009"
 	CMAKE_TARGET_PLATFORM=${OS_DISTRO_NAME}_${OS_DISTRO_RELEASE} # e.g. "Ubuntu_20.04" or "CentOS_7.9.2009" or "Windows_10.0"
-	echo -e "CMAKE_BUILD_PLATFORM  = ${CMAKE_BUILD_PLATFORM}"
-	echo -e "CMAKE_TARGET_PLATFORM = ${CMAKE_TARGET_PLATFORM}"
+	echo -e "${BOLD2}CMAKE_BUILD_PLATFORM  = ${CMAKE_BUILD_PLATFORM}"
+	echo -e "${BOLD2}CMAKE_TARGET_PLATFORM = ${CMAKE_TARGET_PLATFORM}"
 
 	#CMAKE_BUILD_TYPE=Debug
 	CMAKE_BUILD_TYPE=Release
-	echo -e "CMAKE_BUILD_TYPE      = ${CMAKE_BUILD_TYPE}"
+	echo -e "${BOLD2}CMAKE_BUILD_TYPE      = ${CMAKE_BUILD_TYPE}"
 
-	echo -e "--- [fnBuildAndTest] PublishTarballPackage..."
+	echo -e "${BOLD2}--- [fnBuildAndTest] PublishTarballPackage..."
 	fnSampleCodeCreateTarball . ./build/package_sample_code true false false
 }
 
@@ -464,21 +466,21 @@ TARGET_NAME=qoonboard
 echo -e "${BOLD3}*** $0 : ${PROJECTNAME} build script ***${CLEAR}"
 
 if [[ "$1" = "help" ]]                                               ; then fnHelp
-elif [[ "$1" = "install_deps" || "$1" = "installdeps" ]]             ; then fnInstallDependencies                                   ; echo -e "\e[96m--- Done\e[0m"
-elif [[ "$1" = "install_clang15" ]]                                  ; then fnGetClang15                                            ; echo -e "\e[96m--- Done\e[0m"
-elif [[ "$1" = "quickbuild" ]]                                       ; then fnQuickBuild "Debug" "default" "${2}"                   ; echo -e "\e[96m--- Done\e[0m"
-elif [[ "$1" = "build" ]]                                            ; then fnBuild "Debug" "default" "${2}"                        ; echo -e "\e[96m--- Done\e[0m"
-elif [[ "$1" = "rebuild" ]]                                          ; then fnRebuild "Debug" "default" "${2}"                      ; echo -e "\e[96m--- Done\e[0m"
-elif [[ "$1" = "build_release" ]]                                    ; then fnBuild "Release" "default" "${2}"                      ; echo -e "\e[96m--- Done\e[0m"
-elif [[ "$1" = "publish" ]]                                          ; then fnPublish                                               ; echo -e "\e[96m--- Done\e[0m"
-elif [[ "$1" = "publish_windows" ]]                                  ; then fnPublishWindows                                        ; echo -e "\e[96m--- Done\e[0m"
-elif [[ "$1" = "sample_code" || "$1" = "samplecode" ]]               ; then fnBuildAndRunSampleCode                                 ; echo -e "\e[96m--- Done\e[0m"
-elif [[ "$1" = "build_windows" ]]                                    ; then fnBuild "Debug" ./profiles/windows_x64.profile "${2}"   ; echo -e "\e[96m--- Done\e[0m"
-elif [[ "$1" = "build_windows_release" ]]                            ; then fnBuild "Release" ./profiles/windows_x64.profile "${2}" ; echo -e "\e[96m--- Done\e[0m"
-elif [[ "$1" = "tests" ]]                                            ; then fnTests                                                 ; echo -e "\e[96m--- Done\e[0m"
-elif [[ "$1" = "simpleclitests" ]]                                   ; then fnSimpleCLITests                                        ; echo -e "\e[96m--- Done\e[0m"
-elif [[ "$1" = "clean" ]]                                            ; then fnClean                                                 ; echo -e "\e[96m--- Done\e[0m"
-elif [[ "$1" = "clean_all" || "$1" = "cleanall" ]]                   ; then fnCleanAll                                              ; echo -e "\e[96m--- Done\e[0m"
+elif [[ "$1" = "install_deps" || "$1" = "installdeps" ]]             ; then fnInstallDependencies                                   ; echo -e "\e[96m;1m--- Done\e[0m"
+elif [[ "$1" = "install_clang15" ]]                                  ; then fnGetClang15                                            ; echo -e "\e[96m;1m--- Done\e[0m"
+elif [[ "$1" = "quickbuild" ]]                                       ; then fnQuickBuild "Debug" "default" "${2}"                   ; echo -e "\e[96m;1m--- Done\e[0m"
+elif [[ "$1" = "build" ]]                                            ; then fnBuild "Debug" "default" "${2}"                        ; echo -e "\e[96m;1m--- Done\e[0m"
+elif [[ "$1" = "rebuild" ]]                                          ; then fnRebuild "Debug" "default" "${2}"                      ; echo -e "\e[96m;1m--- Done\e[0m"
+elif [[ "$1" = "build_release" ]]                                    ; then fnBuild "Release" "default" "${2}"                      ; echo -e "\e[96m;1m--- Done\e[0m"
+elif [[ "$1" = "publish" ]]                                          ; then fnPublish                                               ; echo -e "\e[96m;1m--- Done\e[0m"
+elif [[ "$1" = "publish_windows" ]]                                  ; then fnPublishWindows                                        ; echo -e "\e[96m;1m--- Done\e[0m"
+elif [[ "$1" = "sample_code" || "$1" = "samplecode" ]]               ; then fnBuildAndRunSampleCode                                 ; echo -e "\e[96m;1m--- Done\e[0m"
+elif [[ "$1" = "build_windows" ]]                                    ; then fnBuild "Debug" ./profiles/windows_x64.profile "${2}"   ; echo -e "\e[96m;1m--- Done\e[0m"
+elif [[ "$1" = "build_windows_release" ]]                            ; then fnBuild "Release" ./profiles/windows_x64.profile "${2}" ; echo -e "\e[96m;1m--- Done\e[0m"
+elif [[ "$1" = "tests" ]]                                            ; then fnTests                                                 ; echo -e "\e[96m;1m--- Done\e[0m"
+elif [[ "$1" = "simpleclitests" ]]                                   ; then fnSimpleCLITests                                        ; echo -e "\e[96m;1m--- Done\e[0m"
+elif [[ "$1" = "clean" ]]                                            ; then fnClean                                                 ; echo -e "\e[96m;1m--- Done\e[0m"
+elif [[ "$1" = "clean_all" || "$1" = "cleanall" ]]                   ; then fnCleanAll                                              ; echo -e "\e[96m;1m--- Done\e[0m"
 else
 	# Backwards-compatibility with original script
 	fnBuild "Debug" "default" "${1}"
