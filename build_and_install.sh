@@ -16,7 +16,7 @@ set -e
 # DECLARE SOME CONSTANTS
 #     # When $TERM is empty (non-interactive shell e.g. github actions/CI), then expand tput with ' -T xterm-256color'
 #     [[ ${TERM} == "" ]] && TPUTTERM=' -T xterm-256color' || TPUTTERM=''
-#     BOLD1=$(tput${TPUTTERM} bold)
+#     COLOUR_HEADING1=$(tput${TPUTTERM} bold)
 #     BOLD3=$(tput${TPUTTERM} bold)
 #
 #     BOLD_GREY="$(   tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 0)" # Grey
@@ -28,13 +28,15 @@ set -e
 #     BOLD_CYAN="$(   tput${TPUTTERM} bold)$(tput${TPUTTERM} setaf 6)" # Cyan   i.e. Set Forground to Bold + Cyan(ANSI 6). Equivalent to "$(tput bold cyan)"
 #     CLEAR=$(tput${TPUTTERM} sgr0)
 
-BROWN_FG="\e[33m"
-BROWN_BG="\e[43m"
-BLUE_BG="\e[44m"
+#BROWN_FG="\e[33m"
+#BROWN_BG="\e[43m"
+#BLUE_BG="\e[44m"
 
-BOLD1="\e[47;1m"
-BOLD2="\e[42;1m"
-BOLD3="\e[43;1m"
+COLOUR_HEADING1="\e[37;1m"
+COLOUR_HEADING2="\e[47;1m"
+COLOUR_HEADING3="\e[47;1m"
+COLOUR_PROGRESS="\e[33;1m"
+COLOUR_ERROR="\e[31;1m"
 CLEAR="\e[0m"
 
 
@@ -79,7 +81,7 @@ CLEAR="\e[0m"
 
 function fnInstallDependencies()
 {
-	echo -e "${BOLD2}TODO: fnInstallDependencies"
+	echo -e "${COLOUR_PROGRESS}TODO: fnInstallDependencies"
 }
 
 function fnGetCrossCompileDependencies()
@@ -90,18 +92,18 @@ function fnGetCrossCompileDependencies()
 
 function fnQuickBuild()
 {
-	echo -e "${BOLD2}TODO: fnQuickBuild"
+	echo -e "${COLOUR_PROGRESS}TODO: fnQuickBuild"
 }
 
 function fnBuild()
 {
-	echo -e "${BOLD2}TODO: fnBuild"
+	echo -e "${COLOUR_PROGRESS}TODO: fnBuild"
 	#fnRunEndtoEndTests
 }
 
 function fnRebuild()
 {
-	echo -e "${BOLD2}TODO: fnRebuild"
+	echo -e "${COLOUR_PROGRESS}TODO: fnRebuild"
 	rm -rf bin lib build
 }
 
@@ -114,20 +116,20 @@ function fnTests()
 {
 	erc=0 # Initialise error code to "success"
 
-	echo -e "${BOLD1}*** Running Tests${CLEAR}"
+	echo -e "${COLOUR_HEADING2}*** Running Tests${CLEAR}"
 	pushd tests
 
-	echo -e "${BLUE_BG}--- UnitTests${CLEAR}"
+	echo -e "${COLOUR_HEADING3}--- UnitTests${CLEAR}"
 	../build/bin/UnitTests || erc=1
 
-	echo -e "${BLUE_BG}--- EndtoEndTests${CLEAR}"
+	echo -e "${COLOUR_HEADING3}--- EndtoEndTests${CLEAR}"
 	../build/bin/EndtoEndTests || erc=1
 
-	echo -e "${BLUE_BG}--- IntegrationTests${CLEAR}"
+	echo -e "${COLOUR_HEADING3}--- IntegrationTests${CLEAR}"
 	../build/bin/IntegrationTests || erc=1
 
 	popd
-	echo -e "${BOLD1}*** Tests Done${CLEAR}"
+	echo -e "${COLOUR_HEADING2}*** Tests Done${CLEAR}"
 
 	fnSimpleCLITests || erc=1
 
@@ -138,36 +140,37 @@ function fnSimpleCLITests()
 {
 	erc=0 # Initialise error code to "success"
 
-	echo -e "${BOLD1}*** Cleaning SimpleCLI_c Tests${CLEAR}"
+	echo -e "${COLOUR_HEADING2}*** Cleaning SimpleCLI_c Tests${CLEAR}"
 	rm -f ./build/bin/qo_onboard_simple_cli_c
 	rm -f ./build/bin/qo_onboard_simple_cli_using_setoptions_c
 
-	echo -e "${BOLD1}*** Building SimpleCLI_c Tests${CLEAR}"
+	echo -e "${COLOUR_HEADING2}*** Building SimpleCLI_c Tests${CLEAR}"
 	fnQuickBuild
 
-	echo -e "${BOLD1}*** Running SimpleCLI_c Tests${CLEAR}"
+	echo -e "${COLOUR_HEADING2}*** Running SimpleCLI_c Tests${CLEAR}"
 	pushd tests
 
-	echo -e "${BLUE_BG}--- qo_onboard_simple_cli_c (hexdump)${CLEAR}"
+	echo -e "${COLOUR_HEADING3}--- qo_onboard_simple_cli_c (hexdump)${CLEAR}"
 	../build/bin/qo_onboard_simple_cli_c ../src/simple_cli_c/config_for_SimpleCLI_tests.yml 400 --verbose || erc=1
 
-	echo -e "${BLUE_BG}--- qo_onboard_simple_cli_c (entropy analysis)${CLEAR}"
+	echo -e "${COLOUR_HEADING3}--- qo_onboard_simple_cli_c (entropy analysis)${CLEAR}"
 	../build/bin/qo_onboard_simple_cli_c ../src/simple_cli_c/config_for_SimpleCLI_tests.yml 400 | ent || erc=1
 
-	echo -e "${BLUE_BG}--- qo_onboard_simple_cli_using_setoptions_c (hexdump)${CLEAR}"
+	echo -e "${COLOUR_HEADING3}--- qo_onboard_simple_cli_using_setoptions_c (hexdump)${CLEAR}"
 	../build/bin/qo_onboard_simple_cli_using_setoptions_c 400 --verbose || erc=1
 
-	echo -e "${BLUE_BG}--- qo_onboard_simple_cli_using_setoptions_c (entropy analysis)${CLEAR}"
+	echo -e "${COLOUR_HEADING3}--- qo_onboard_simple_cli_using_setoptions_c (entropy analysis)${CLEAR}"
 	../build/bin/qo_onboard_simple_cli_using_setoptions_c 400 | ent || erc=1
 
 	popd
-	echo -e "${BOLD1}*** Tests Done${CLEAR}"
+	echo -e "${COLOUR_HEADING2}*** Tests Done${CLEAR}"
 
 	return $erc
 }
 
 function fnClean()
 {
+	echo -e "${COLOUR_HEADING2}*** Clean...${CLEAR}"
 	rm -rf ./build
 	rm -rf ./documentation/build
 	rm -rf ./documentation/html
@@ -189,6 +192,7 @@ function fnCleanAll()
 
 function fnPublish()
 {
+	echo -e "${COLOUR_HEADING2}*** Publish...${CLEAR}"
 	mkdir -p publish
 	cp build/libqo_onboard.so publish/
 	cp -R include/ publish/
@@ -199,6 +203,7 @@ function fnPublish()
 
 function fnPublishWindows()
 {
+	echo -e "${COLOUR_HEADING2}*** PublishWindows...${CLEAR}"
 	mkdir -p publish
 	cp build/bin/libqo_onboard.dll publish/
 	cp -R include/ publish/
@@ -272,7 +277,7 @@ function fnInstall_QuantumOriginOnboardFromGithub()
 	# Ensure that we have the tarball here with us
 	for i in qo_onboard_*.tgz; do
 		if [ ! -f "$i" ]; then
-			echo -e "${BOLD_ERROR}ERROR: Failed to retrieve qo_onboard_*.gz published tarball. Exiting."
+			echo -e "${COLOUR_ERROR}ERROR: Failed to retrieve qo_onboard_*.gz published tarball. Exiting."
 			exit 1
 		fi
 	done
@@ -288,26 +293,26 @@ function fnInstall_QuantumOriginOnboardFromGithub()
 # -------------------------------------------------------------------------
 function fnSampleCodeCreateTarball()
 {
-	echo -e "${BOLD2}--- --------------------------------------------------------------------------------------------------------------------"
-	echo -e "${BOLD2}--- fnSampleCodeCreateTarball - BEGIN"
+	echo -e "${COLOUR_HEADING2}--- --------------------------------------------------------------------------------------------------------------------"
+	echo -e "${COLOUR_HEADING2}--- fnSampleCodeCreateTarball - BEGIN"
 
 	PROJECT_ROOTDIR="${1}"
 	PACKAGE_DIR="${2}"
 	PACKAGE_LIBRARY_BINARIES="${3}"
 	PACKAGE_SAMPLE_BINARIES="${4}"
 	PACKAGE_HTML_DOCUMENTATION="${5}"
-	echo -e "${BOLD2}    PROJECT_ROOTDIR            = ${PROJECT_ROOTDIR}"
-	echo -e "${BOLD2}    PACKAGE_DIR                = ${PACKAGE_DIR}"
-	echo -e "${BOLD2}    PACKAGE_LIBRARY_BINARIES   = ${PACKAGE_LIBRARY_BINARIES}"
-	echo -e "${BOLD2}    PACKAGE_SAMPLE_BINARIES    = ${PACKAGE_SAMPLE_BINARIES}"
-	echo -e "${BOLD2}    PACKAGE_HTML_DOCUMENTATION = ${PACKAGE_HTML_DOCUMENTATION}"
+	echo -e "${COLOUR_PROGRESS}    PROJECT_ROOTDIR            = ${PROJECT_ROOTDIR}"
+	echo -e "${COLOUR_PROGRESS}    PACKAGE_DIR                = ${PACKAGE_DIR}"
+	echo -e "${COLOUR_PROGRESS}    PACKAGE_LIBRARY_BINARIES   = ${PACKAGE_LIBRARY_BINARIES}"
+	echo -e "${COLOUR_PROGRESS}    PACKAGE_SAMPLE_BINARIES    = ${PACKAGE_SAMPLE_BINARIES}"
+	echo -e "${COLOUR_PROGRESS}    PACKAGE_HTML_DOCUMENTATION = ${PACKAGE_HTML_DOCUMENTATION}"
 
 	rm -rf "${PACKAGE_DIR}/"
 	mkdir -p "${PACKAGE_DIR}/"
 
 	if "${PACKAGE_LIBRARY_BINARIES}"
 	then
-		echo -e "${BOLD2}--- Packaging library binaries..."
+		echo -e "${COLOUR_PROGRESS}--- Packaging library binaries..."
 		mkdir -p "${PACKAGE_DIR}/lib/"
 		cp ${PROJECT_ROOTDIR}/build/src/qo_onboard_c/libqo_onboard_c.a                   ${PACKAGE_DIR}/lib
 		cp ${PROJECT_ROOTDIR}/build/src/qo_onboard_c/libqo_onboard_library.so            ${PACKAGE_DIR}/lib
@@ -319,7 +324,7 @@ function fnSampleCodeCreateTarball()
 
 	if "${PACKAGE_HTML_DOCUMENTATION}"
 	then
-		echo -e "${BOLD2}--- Packaging documentation..."
+		echo -e "${COLOUR_PROGRESS}--- Packaging documentation..."
 		cp -r  ${PROJECT_ROOTDIR}/documentation/public/latest/      ${PACKAGE_DIR}
 		mv ${PACKAGE_DIR}/latest ${PACKAGE_DIR}/documentation
 	fi
@@ -340,7 +345,7 @@ function fnSampleCodeCreateTarball()
 
 	if "${PACKAGE_SAMPLE_BINARIES}"
 	then
-		echo -e "${BOLD2}--- Packaging sample binaries..."
+		echo -e "${COLOUR_PROGRESS}--- Packaging sample binaries..."
 		mkdir -p ${PACKAGE_DIR}/bin
 		cp ${PROJECT_ROOTDIR}/build/bin/qo_onboard_sample_code_A_using_config_file    ${PACKAGE_DIR}/bin/
 		cp ${PROJECT_ROOTDIR}/build/bin/qo_onboard_sample_code_B_using_setopt_api     ${PACKAGE_DIR}/bin/
@@ -385,7 +390,7 @@ function fnSampleCodeCreateTarball()
 		rm -rf ${PACKAGE_DIR}/bin/
 	fi
 
-	echo -e "${BOLD2}--- fnSampleCodeCreateTarball - END"
+	echo -e "${COLOUR_HEADING2}--- fnSampleCodeCreateTarball - END"
 }
 
 function fnPackageSampleCode
@@ -393,44 +398,44 @@ function fnPackageSampleCode
 	fnGetDistro
 	CMAKE_BUILD_PLATFORM=${OS_DISTRO_NAME}_${OS_DISTRO_RELEASE} # e.g. "Ubuntu_20.04" or "CentOS_7.9.2009"
 	CMAKE_TARGET_PLATFORM=${OS_DISTRO_NAME}_${OS_DISTRO_RELEASE} # e.g. "Ubuntu_20.04" or "CentOS_7.9.2009" or "Windows_10.0"
-	echo -e "${BOLD2}CMAKE_BUILD_PLATFORM  = ${CMAKE_BUILD_PLATFORM}"
-	echo -e "${BOLD2}CMAKE_TARGET_PLATFORM = ${CMAKE_TARGET_PLATFORM}"
+	echo -e "${COLOUR_PROGRESS}CMAKE_BUILD_PLATFORM  = ${CMAKE_BUILD_PLATFORM}"
+	echo -e "${COLOUR_PROGRESS}CMAKE_TARGET_PLATFORM = ${CMAKE_TARGET_PLATFORM}"
 
 	#CMAKE_BUILD_TYPE=Debug
 	CMAKE_BUILD_TYPE=Release
-	echo -e "${BOLD2}CMAKE_BUILD_TYPE      = ${CMAKE_BUILD_TYPE}"
+	echo -e "${COLOUR_PROGRESS}CMAKE_BUILD_TYPE      = ${CMAKE_BUILD_TYPE}"
 
-	echo -e "${BOLD2}--- [fnBuildAndTest] PublishTarballPackage..."
+	echo -e "${COLOUR_PROGRESS}--- [fnBuildAndTest] PublishTarballPackage..."
 	fnSampleCodeCreateTarball . ./build/package_sample_code true false false
 }
 
 function fnBuildAndRunSampleCode() # DeveloperTrack
 {
-	echo -e "${BOLD1}*** Package, install, build and run sample code${CLEAR}"
+	echo -e "${COLOUR_HEADING2}*** Package, install, build and run sample code${CLEAR}"
 
-	echo -e "${BOLD1}*** Decompress tarball to INSTALL_TARGET - typically ~/quantum-origin-onboard${CLEAR}"
+	echo -e "${COLOUR_HEADING3}*** Decompress tarball to INSTALL_TARGET - typically ~/quantum-origin-onboard${CLEAR}"
 	rm -rf ./build/package_sample_code/
 	fnPackageSampleCode
 
-	echo -e "${BOLD1}*** Unzip tarball to INSTALL_TARGET - typically ~/quantum-origin-onboard${CLEAR}"
+	echo -e "${COLOUR_HEADING3}*** Unzip tarball to INSTALL_TARGET - typically ~/quantum-origin-onboard${CLEAR}"
 	pushd ./build/package_sample_code
 	rm -rf ~/quantum-origin-onboard/
 	./qoo_samples_install.sh
 	popd
 
-	echo -e "${BOLD1}*** Build sample code${CLEAR}"
+	echo -e "${COLOUR_HEADING3}*** Build sample code${CLEAR}"
 	pushd ~/quantum-origin-onboard/
 	rm -f ./*.o ./*.out
 	rm -rf ${INSTALL_TARGET}
 	./qoo_samples_build.sh
 	popd
 
-	echo -e "${BOLD1}*** Running sample code${CLEAR}"
+	echo -e "${COLOUR_HEADING3}*** Running sample code${CLEAR}"
 	pushd ~/quantum-origin-onboard/
 	./qoo_samples_run.sh
 	popd
 
-	echo -e "${BOLD1}*** Done${CLEAR}"
+	echo -e "${COLOUR_HEADING2}*** Done${CLEAR}"
 }
 
 #########################################
@@ -442,18 +447,18 @@ function fnBuildAndRunSampleCode() # DeveloperTrack
 ###################################
 function fnHelp()
 {
-	echo -e "${BOLD1}**********************************************${CLEAR}"
-	echo -e "${BOLD1}*** Project: QuantumOrigin.Library.Onboard${CLEAR}"
-	echo -e "${BOLD1}*** File   : build_and_deploy.sh${CLEAR}"
-	echo -e "${BOLD1}*** Usage  : build_and_deploy.sh [arg]${CLEAR}"
-	echo -e "${BOLD1}*** arg    : help${CLEAR}"
-	echo -e "${BOLD1}***          install_clang15 | install_deps | install_cross_deps${CLEAR}"
-	echo -e "${BOLD1}***          build | quickbuild | build_aarch64 | build_armhf | build_windows${CLEAR}"
-	echo -e "${BOLD1}***          build_release | build_aarch64_release | build_armhf_release | build_windows_release${CLEAR}"
-	echo -e "${BOLD1}***          publish | publish_windows${CLEAR}"
-	echo -e "${BOLD1}***          tests | simpleclitests | sample_code${CLEAR}"
-	echo -e "${BOLD1}***          clean | clean_all${CLEAR}"
-	echo -e "${BOLD1}**********************************************${CLEAR}"
+	echo -e "${COLOUR_PROGRESS}**********************************************${CLEAR}"
+	echo -e "${COLOUR_PROGRESS}*** Project: QuantumOrigin.Library.Onboard${CLEAR}"
+	echo -e "${COLOUR_PROGRESS}*** File   : build_and_deploy.sh${CLEAR}"
+	echo -e "${COLOUR_PROGRESS}*** Usage  : build_and_deploy.sh [arg]${CLEAR}"
+	echo -e "${COLOUR_PROGRESS}*** arg    : help${CLEAR}"
+	echo -e "${COLOUR_PROGRESS}***          install_clang15 | install_deps | install_cross_deps${CLEAR}"
+	echo -e "${COLOUR_PROGRESS}***          build | quickbuild | build_aarch64 | build_armhf | build_windows${CLEAR}"
+	echo -e "${COLOUR_PROGRESS}***          build_release | build_aarch64_release | build_armhf_release | build_windows_release${CLEAR}"
+	echo -e "${COLOUR_PROGRESS}***          publish | publish_windows${CLEAR}"
+	echo -e "${COLOUR_PROGRESS}***          tests | simpleclitests | sample_code${CLEAR}"
+	echo -e "${COLOUR_PROGRESS}***          clean | clean_all${CLEAR}"
+	echo -e "${COLOUR_PROGRESS}**********************************************${CLEAR}"
 }
 
 
@@ -463,24 +468,24 @@ function fnHelp()
 PROJECTNAME="[QOOnboard]"
 TARGET_NAME=qoonboard
 
-echo -e "${BOLD3}*** $0 : ${PROJECTNAME} build script ***${CLEAR}"
+echo -e "${COLOUR_HEADING1}*** $0 : ${PROJECTNAME} build script ***${CLEAR}"
 
 if [[ "$1" = "help" ]]                                               ; then fnHelp
-elif [[ "$1" = "install_deps" || "$1" = "installdeps" ]]             ; then fnInstallDependencies                                   ; echo -e "\e[96m;1m--- Done\e[0m"
-elif [[ "$1" = "install_clang15" ]]                                  ; then fnGetClang15                                            ; echo -e "\e[96m;1m--- Done\e[0m"
-elif [[ "$1" = "quickbuild" ]]                                       ; then fnQuickBuild "Debug" "default" "${2}"                   ; echo -e "\e[96m;1m--- Done\e[0m"
-elif [[ "$1" = "build" ]]                                            ; then fnBuild "Debug" "default" "${2}"                        ; echo -e "\e[96m;1m--- Done\e[0m"
-elif [[ "$1" = "rebuild" ]]                                          ; then fnRebuild "Debug" "default" "${2}"                      ; echo -e "\e[96m;1m--- Done\e[0m"
-elif [[ "$1" = "build_release" ]]                                    ; then fnBuild "Release" "default" "${2}"                      ; echo -e "\e[96m;1m--- Done\e[0m"
-elif [[ "$1" = "publish" ]]                                          ; then fnPublish                                               ; echo -e "\e[96m;1m--- Done\e[0m"
-elif [[ "$1" = "publish_windows" ]]                                  ; then fnPublishWindows                                        ; echo -e "\e[96m;1m--- Done\e[0m"
-elif [[ "$1" = "sample_code" || "$1" = "samplecode" ]]               ; then fnBuildAndRunSampleCode                                 ; echo -e "\e[96m;1m--- Done\e[0m"
-elif [[ "$1" = "build_windows" ]]                                    ; then fnBuild "Debug" ./profiles/windows_x64.profile "${2}"   ; echo -e "\e[96m;1m--- Done\e[0m"
-elif [[ "$1" = "build_windows_release" ]]                            ; then fnBuild "Release" ./profiles/windows_x64.profile "${2}" ; echo -e "\e[96m;1m--- Done\e[0m"
-elif [[ "$1" = "tests" ]]                                            ; then fnTests                                                 ; echo -e "\e[96m;1m--- Done\e[0m"
-elif [[ "$1" = "simpleclitests" ]]                                   ; then fnSimpleCLITests                                        ; echo -e "\e[96m;1m--- Done\e[0m"
-elif [[ "$1" = "clean" ]]                                            ; then fnClean                                                 ; echo -e "\e[96m;1m--- Done\e[0m"
-elif [[ "$1" = "clean_all" || "$1" = "cleanall" ]]                   ; then fnCleanAll                                              ; echo -e "\e[96m;1m--- Done\e[0m"
+elif [[ "$1" = "install_deps" || "$1" = "installdeps" ]]             ; then fnInstallDependencies                                   ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
+elif [[ "$1" = "install_clang15" ]]                                  ; then fnGetClang15                                            ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
+elif [[ "$1" = "quickbuild" ]]                                       ; then fnQuickBuild "Debug" "default" "${2}"                   ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
+elif [[ "$1" = "build" ]]                                            ; then fnBuild "Debug" "default" "${2}"                        ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
+elif [[ "$1" = "rebuild" ]]                                          ; then fnRebuild "Debug" "default" "${2}"                      ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
+elif [[ "$1" = "build_release" ]]                                    ; then fnBuild "Release" "default" "${2}"                      ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
+elif [[ "$1" = "publish" ]]                                          ; then fnPublish                                               ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
+elif [[ "$1" = "publish_windows" ]]                                  ; then fnPublishWindows                                        ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
+elif [[ "$1" = "sample_code" || "$1" = "samplecode" ]]               ; then fnBuildAndRunSampleCode                                 ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
+elif [[ "$1" = "build_windows" ]]                                    ; then fnBuild "Debug" ./profiles/windows_x64.profile "${2}"   ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
+elif [[ "$1" = "build_windows_release" ]]                            ; then fnBuild "Release" ./profiles/windows_x64.profile "${2}" ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
+elif [[ "$1" = "tests" ]]                                            ; then fnTests                                                 ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
+elif [[ "$1" = "simpleclitests" ]]                                   ; then fnSimpleCLITests                                        ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
+elif [[ "$1" = "clean" ]]                                            ; then fnClean                                                 ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
+elif [[ "$1" = "clean_all" || "$1" = "cleanall" ]]                   ; then fnCleanAll                                              ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
 else
 	# Backwards-compatibility with original script
 	fnBuild "Debug" "default" "${1}"
