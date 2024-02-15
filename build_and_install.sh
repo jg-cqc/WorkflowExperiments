@@ -63,7 +63,19 @@ function fnInstall_QuantumOriginOnboardFromGithub()
 	pushd ${INSTALL_TARGET}
 
 	# Retrieve Quantum Origin Onboard release tarball
-	wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.0.2/qo_onboard_ubuntu-20.04_x64_Release-v2.0.2.tgz
+	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.0.2/qo_onboard_ubuntu-20.04_x64_Release-v2.0.2.tgz
+	wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_ubuntu-20.04_x64_Release-v2.1.0.tgz
+
+	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_devbin_ubuntu-20.04_armv8_Release-v2.1.0.tgz
+	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_devbin_ubuntu-20.04_x64_Debug-v2.1.0.tgz
+	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_devbin_ubuntu-20.04_x64_Release-v2.1.0.tgz
+	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_tools_deb_ubuntu-20.04_armv8_Release-v2.1.0.tgz
+	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_tools_deb_ubuntu-20.04_x64_Debug-v2.1.0.tgz
+	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_tools_deb_ubuntu-20.04_x64_Release-v2.1.0.tgz
+	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_ubuntu-20.04_armv8_Release-v2.1.0.tgz
+	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_ubuntu-20.04_x64_Debug-v2.1.0.tgz
+	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_ubuntu-20.04_x64_Release-v2.1.0.tgz
+	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/quantum_origin_onboard_api_docs-v2.1.0.tgz
 
 	# Ensure that we have the tarball here with us
 	for i in qo_onboard_*.tgz; do
