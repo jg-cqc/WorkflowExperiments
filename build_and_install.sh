@@ -33,7 +33,7 @@ set -e
 #BLUE_BG="\e[44m"
 
 COLOUR_HEADING1="\e[37;1m"
-COLOUR_HEADING2="\e[44;37;1m"
+COLOUR_HEADING2="\e[44m\e37;1m"
 COLOUR_HEADING3="\e[33;1m"
 COLOUR_PROGRESS="\e[36m;1m"
 COLOUR_ERROR="\e[31;1m"
@@ -53,12 +53,12 @@ CLEAR="\e[0m"
 #                   White       : \e[37m
 #            Bright Black       : \e[30;1m
 #            Bright Red         : \e[31;1m
-#            Bright Green       : \e[32;1m    [... or \e[96 ? (64+32) ]
+#            Bright Green       : \e[32;1m    [... or \e[96m ? (64+32) ]
 #            Bright Yellow      : \e[33;1m
 #            Bright Blue        : \e[34;1m
 #            Bright Magenta     : \e[35;1m
 #            Bright Cyan        : \e[36;1m
-#            Bright White       : \e[37;1m
+#            Bright White       : \e[37;1m    [... or \e[101m ? (64+37) ] TBC
 # Background        Black       : \e[40m
 # Background        Red         : \e[41m
 # Background        Green       : \e[42m
