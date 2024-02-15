@@ -21,71 +21,69 @@ COLOUR_PROGRESS="\e[33m"
 COLOUR_ERROR="\e[31;1m"
 CLEAR="\e[0m"
 
+# +--------+--------+-----------+-----------+-----------------+---------------------------------------------------------------------------+
+#          | NORMAL |  BRIGHT   |  BACKGRND | BACKGRND-BRIGHT | NOTES
+# +--------+--------+-----------+-----------+-----------------+---------------------------------------------------------------------------+
+#  Black   | \e[30m |  \e[30;1m |  \e[40m   | \e[40;1m        | (Escape can be \e or \u001b)
+#  Red     | \e[31m |  \e[31;1m |  \e[41m   | \e[41;1m        |
+#  Green   | \e[32m |  \e[32;1m |  \e[42m   | \e[42;1m        | (Bright \e[32;1m can also be written as \e[96m ? (64+32))
+#  Yellow  | \e[33m |  \e[33;1m |  \e[43m   | \e[43;1m        |
+#  Blue    | \e[34m |  \e[34;1m |  \e[44m   | \e[44;1m        |
+#  Magenta | \e[35m |  \e[35;1m |  \e[45m   | \e[45;1m        |
+#  Cyan    | \e[36m |  \e[36;1m |  \e[46m   | \e[46;1m        |
+#  White   | \e[37m |  \e[37;1m |  \e[47m   | \e[47;1m        | (Bright \e[37;1m can also be written as \e[101m ? (64+37)  (tbc))
+#  Reset   | \e[0m  |           |           |                 |
+# +--------+--------+-----------+-----------+-----------------+---------------------------------------------------------------------------+
 
-# Bright Green:
-# Escape can be \e or \u001b
-#                   Reset       : \e[0m
-#                   Black       : \e[30m
-#                   Red         : \e[31m
-#                   Green       : \e[32m
-#                   Yellow      : \e[33m
-#                   Blue        : \e[34m
-#                   Magenta     : \e[35m
-#                   Cyan        : \e[36m
-#                   White       : \e[37m
-#            Bright Black       : \e[30;1m
-#            Bright Red         : \e[31;1m
-#            Bright Green       : \e[32;1m    [... or \e[96m ? (64+32) ]
-#            Bright Yellow      : \e[33;1m
-#            Bright Blue        : \e[34;1m
-#            Bright Magenta     : \e[35;1m
-#            Bright Cyan        : \e[36;1m
-#            Bright White       : \e[37;1m    [... or \e[101m ? (64+37) ] TBC
-# Background        Black       : \e[40m
-# Background        Red         : \e[41m
-# Background        Green       : \e[42m
-# Background        Yellow      : \e[43m
-# Background        Blue        : \e[44m
-# Background        Magenta     : \e[45m
-# Background        Cyan        : \e[46m
-# Background        White       : \e[47m
-# Background Bright Black       : \e[40;1m
-# Background Bright Red         : \e[41;1m
-# Background Bright Green       : \e[42;1m
-# Background Bright Yellow      : \e[43;1m
-# Background Bright Blue        : \e[44;1m
-# Background Bright Magenta     : \e[45;1m
-# Background Bright Cyan        : \e[46;1m
-# Background Bright White       : \e[47;1m
+function fnGetClang15()
+{
+	echo -e "${COLOUR_PROGRESS}    > Install clang15${CLEAR}"
+	wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+	echo "deb https://apt.llvm.org/focal/ llvm-toolchain-focal-15 main" | sudo tee -a /etc/apt/sources.list
+	echo "deb-src https://apt.llvm.org/focal/ llvm-toolchain-focal-15 main" | sudo tee -a /etc/apt/sources.list
+	sudo apt update
+	sudo apt install -y "lld-15" "libclang-15-dev" "clang-15"
+}
 
-
-
+function fnInstallinstallYamlEditor()
+{
+	echo -e "${COLOUR_PROGRESS}    > Install yq - A commandline yaml editor${CLEAR}"
+	if [ ! -f /usr/local/bin/yq ] ; then
+		echo -e "${COLOUR_PROGRESS}    > Installing yaml editor (yq)${CLEAR}"
+		sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+		sudo chmod a+x /usr/local/bin/yq
+		yq --version
+	fi
+}
 
 function fnInstallDependencies()
 {
-	echo -e "${COLOUR_PROGRESS}TODO: fnInstallDependencies"
+	echo -e "${COLOUR_PROGRESS}    > Install Dependencies${CLEAR}"
+	fnInstallinstallYamlEditor
+	fnInstall_QuantumOriginOnboardFromGithub
 }
 
 function fnGetCrossCompileDependencies()
 {
+	echo -e "${COLOUR_PROGRESS}    > Install Cross Compile Dependencies${CLEAR}"
 	sudo apt update
 	sudo apt install -y "gcc-mingw-w64" "g++-mingw-w64"
 }
 
 function fnQuickBuild()
 {
-	echo -e "${COLOUR_PROGRESS}TODO: fnQuickBuild"
+	echo -e "${COLOUR_PROGRESS}TODO: fnQuickBuild${CLEAR}"
 }
 
 function fnBuild()
 {
-	echo -e "${COLOUR_PROGRESS}TODO: fnBuild"
+	echo -e "${COLOUR_PROGRESS}TODO: fnBuild${CLEAR}"
 	#fnRunEndtoEndTests
 }
 
 function fnRebuild()
 {
-	echo -e "${COLOUR_PROGRESS}TODO: fnRebuild"
+	echo -e "${COLOUR_PROGRESS}TODO: fnRebuild${CLEAR}"
 	rm -rf bin lib build
 }
 
@@ -93,6 +91,14 @@ function fnRunEndtoEndTests()
 {
 	./build/bin/EndtoEndTests
 }
+
+function fnBuildCmakePackage()
+{
+	mkdir -p build_cmake_debug
+	cd build_cmake_debug && cmake -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake ..
+	cd build_cmake_debug && cpack -G DEB
+}
+
 
 function fnTests()
 {
@@ -259,7 +265,7 @@ function fnInstall_QuantumOriginOnboardFromGithub()
 	# Ensure that we have the tarball here with us
 	for i in qo_onboard_*.tgz; do
 		if [ ! -f "$i" ]; then
-			echo -e "${COLOUR_ERROR}ERROR: Failed to retrieve qo_onboard_*.gz published tarball. Exiting."
+			echo -e "${COLOUR_ERROR}ERROR: Failed to retrieve qo_onboard_*.gz published tarball. Exiting.${CLEAR}"
 			exit 1
 		fi
 	done
@@ -275,26 +281,26 @@ function fnInstall_QuantumOriginOnboardFromGithub()
 # -------------------------------------------------------------------------
 function fnSampleCodeCreateTarball()
 {
-	echo -e "${COLOUR_HEADING2}--- --------------------------------------------------------------------------------------------------------------------"
-	echo -e "${COLOUR_HEADING2}--- fnSampleCodeCreateTarball - BEGIN"
+	echo -e "${COLOUR_HEADING2}--- --------------------------------------------------------------------------------------------------------------------${CLEAR}"
+	echo -e "${COLOUR_HEADING2}--- fnSampleCodeCreateTarball - BEGIN${CLEAR}"
 
 	PROJECT_ROOTDIR="${1}"
 	PACKAGE_DIR="${2}"
 	PACKAGE_LIBRARY_BINARIES="${3}"
 	PACKAGE_SAMPLE_BINARIES="${4}"
 	PACKAGE_HTML_DOCUMENTATION="${5}"
-	echo -e "${COLOUR_PROGRESS}    PROJECT_ROOTDIR            = ${PROJECT_ROOTDIR}"
-	echo -e "${COLOUR_PROGRESS}    PACKAGE_DIR                = ${PACKAGE_DIR}"
-	echo -e "${COLOUR_PROGRESS}    PACKAGE_LIBRARY_BINARIES   = ${PACKAGE_LIBRARY_BINARIES}"
-	echo -e "${COLOUR_PROGRESS}    PACKAGE_SAMPLE_BINARIES    = ${PACKAGE_SAMPLE_BINARIES}"
-	echo -e "${COLOUR_PROGRESS}    PACKAGE_HTML_DOCUMENTATION = ${PACKAGE_HTML_DOCUMENTATION}"
+	echo -e "${COLOUR_PROGRESS}    PROJECT_ROOTDIR            = ${PROJECT_ROOTDIR}${CLEAR}"
+	echo -e "${COLOUR_PROGRESS}    PACKAGE_DIR                = ${PACKAGE_DIR}${CLEAR}"
+	echo -e "${COLOUR_PROGRESS}    PACKAGE_LIBRARY_BINARIES   = ${PACKAGE_LIBRARY_BINARIES}${CLEAR}"
+	echo -e "${COLOUR_PROGRESS}    PACKAGE_SAMPLE_BINARIES    = ${PACKAGE_SAMPLE_BINARIES}${CLEAR}"
+	echo -e "${COLOUR_PROGRESS}    PACKAGE_HTML_DOCUMENTATION = ${PACKAGE_HTML_DOCUMENTATION}${CLEAR}"
 
 	rm -rf "${PACKAGE_DIR}/"
 	mkdir -p "${PACKAGE_DIR}/"
 
 	if "${PACKAGE_LIBRARY_BINARIES}"
 	then
-		echo -e "${COLOUR_PROGRESS}--- Packaging library binaries..."
+		echo -e "${COLOUR_PROGRESS}--- Packaging library binaries...${CLEAR}"
 		mkdir -p "${PACKAGE_DIR}/lib/"
 		cp ${PROJECT_ROOTDIR}/build/src/qo_onboard_c/libqo_onboard_c.a                   ${PACKAGE_DIR}/lib
 		cp ${PROJECT_ROOTDIR}/build/src/qo_onboard_c/libqo_onboard_library.so            ${PACKAGE_DIR}/lib
@@ -306,7 +312,7 @@ function fnSampleCodeCreateTarball()
 
 	if "${PACKAGE_HTML_DOCUMENTATION}"
 	then
-		echo -e "${COLOUR_PROGRESS}--- Packaging documentation..."
+		echo -e "${COLOUR_PROGRESS}--- Packaging documentation...${CLEAR}"
 		cp -r  ${PROJECT_ROOTDIR}/documentation/public/latest/      ${PACKAGE_DIR}
 		mv ${PACKAGE_DIR}/latest ${PACKAGE_DIR}/documentation
 	fi
@@ -327,7 +333,7 @@ function fnSampleCodeCreateTarball()
 
 	if "${PACKAGE_SAMPLE_BINARIES}"
 	then
-		echo -e "${COLOUR_PROGRESS}--- Packaging sample binaries..."
+		echo -e "${COLOUR_PROGRESS}--- Packaging sample binaries...${CLEAR}"
 		mkdir -p ${PACKAGE_DIR}/bin
 		cp ${PROJECT_ROOTDIR}/build/bin/qo_onboard_sample_code_A_using_config_file    ${PACKAGE_DIR}/bin/
 		cp ${PROJECT_ROOTDIR}/build/bin/qo_onboard_sample_code_B_using_setopt_api     ${PACKAGE_DIR}/bin/
@@ -372,7 +378,7 @@ function fnSampleCodeCreateTarball()
 		rm -rf ${PACKAGE_DIR}/bin/
 	fi
 
-	echo -e "${COLOUR_HEADING2}--- fnSampleCodeCreateTarball - END"
+	echo -e "${COLOUR_HEADING2}--- fnSampleCodeCreateTarball - END${CLEAR}"
 }
 
 function fnPackageSampleCode
@@ -380,14 +386,14 @@ function fnPackageSampleCode
 	fnGetDistro
 	CMAKE_BUILD_PLATFORM=${OS_DISTRO_NAME}_${OS_DISTRO_RELEASE} # e.g. "Ubuntu_20.04" or "CentOS_7.9.2009"
 	CMAKE_TARGET_PLATFORM=${OS_DISTRO_NAME}_${OS_DISTRO_RELEASE} # e.g. "Ubuntu_20.04" or "CentOS_7.9.2009" or "Windows_10.0"
-	echo -e "${COLOUR_PROGRESS}CMAKE_BUILD_PLATFORM  = ${CMAKE_BUILD_PLATFORM}"
-	echo -e "${COLOUR_PROGRESS}CMAKE_TARGET_PLATFORM = ${CMAKE_TARGET_PLATFORM}"
+	echo -e "${COLOUR_PROGRESS}CMAKE_BUILD_PLATFORM  = ${CMAKE_BUILD_PLATFORM}${CLEAR}"
+	echo -e "${COLOUR_PROGRESS}CMAKE_TARGET_PLATFORM = ${CMAKE_TARGET_PLATFORM}${CLEAR}"
 
 	#CMAKE_BUILD_TYPE=Debug
 	CMAKE_BUILD_TYPE=Release
-	echo -e "${COLOUR_PROGRESS}CMAKE_BUILD_TYPE      = ${CMAKE_BUILD_TYPE}"
+	echo -e "${COLOUR_PROGRESS}CMAKE_BUILD_TYPE      = ${CMAKE_BUILD_TYPE}${CLEAR}"
 
-	echo -e "${COLOUR_PROGRESS}--- [fnBuildAndTest] PublishTarballPackage..."
+	echo -e "${COLOUR_PROGRESS}--- [fnBuildAndTest] PublishTarballPackage...${CLEAR}"
 	fnSampleCodeCreateTarball . ./build/package_sample_code true false false
 }
 
@@ -453,21 +459,21 @@ TARGET_NAME=qoonboard
 echo -e "${COLOUR_HEADING1}*** $0 : ${PROJECTNAME} build script ***${CLEAR}"
 
 if [[ "$1" = "help" ]]                                               ; then fnHelp
-elif [[ "$1" = "install_deps" || "$1" = "installdeps" ]]             ; then fnInstallDependencies                                   ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
-elif [[ "$1" = "install_clang15" ]]                                  ; then fnGetClang15                                            ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
-elif [[ "$1" = "quickbuild" ]]                                       ; then fnQuickBuild "Debug" "default" "${2}"                   ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
-elif [[ "$1" = "build" ]]                                            ; then fnBuild "Debug" "default" "${2}"                        ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
-elif [[ "$1" = "rebuild" ]]                                          ; then fnRebuild "Debug" "default" "${2}"                      ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
-elif [[ "$1" = "build_release" ]]                                    ; then fnBuild "Release" "default" "${2}"                      ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
-elif [[ "$1" = "publish" ]]                                          ; then fnPublish                                               ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
-elif [[ "$1" = "publish_windows" ]]                                  ; then fnPublishWindows                                        ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
-elif [[ "$1" = "sample_code" || "$1" = "samplecode" ]]               ; then fnBuildAndRunSampleCode                                 ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
-elif [[ "$1" = "build_windows" ]]                                    ; then fnBuild "Debug" ./profiles/windows_x64.profile "${2}"   ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
-elif [[ "$1" = "build_windows_release" ]]                            ; then fnBuild "Release" ./profiles/windows_x64.profile "${2}" ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
-elif [[ "$1" = "tests" ]]                                            ; then fnTests                                                 ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
-elif [[ "$1" = "simpleclitests" ]]                                   ; then fnSimpleCLITests                                        ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
-elif [[ "$1" = "clean" ]]                                            ; then fnClean                                                 ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
-elif [[ "$1" = "clean_all" || "$1" = "cleanall" ]]                   ; then fnCleanAll                                              ; echo -e "${COLOUR_PROGRESS}--- Done\e[0m"
+elif [[ "$1" = "install_deps" || "$1" = "installdeps" ]]             ; then fnInstallDependencies                                   ; echo -e "${COLOUR_PROGRESS}--- Done${CLEAR}"
+elif [[ "$1" = "install_clang15" ]]                                  ; then fnGetClang15                                            ; echo -e "${COLOUR_PROGRESS}--- Done${CLEAR}"
+elif [[ "$1" = "quickbuild" ]]                                       ; then fnQuickBuild "Debug" "default" "${2}"                   ; echo -e "${COLOUR_PROGRESS}--- Done${CLEAR}"
+elif [[ "$1" = "build" ]]                                            ; then fnBuild "Debug" "default" "${2}"                        ; echo -e "${COLOUR_PROGRESS}--- Done${CLEAR}"
+elif [[ "$1" = "rebuild" ]]                                          ; then fnRebuild "Debug" "default" "${2}"                      ; echo -e "${COLOUR_PROGRESS}--- Done${CLEAR}"
+elif [[ "$1" = "build_release" ]]                                    ; then fnBuild "Release" "default" "${2}"                      ; echo -e "${COLOUR_PROGRESS}--- Done${CLEAR}"
+elif [[ "$1" = "publish" ]]                                          ; then fnPublish                                               ; echo -e "${COLOUR_PROGRESS}--- Done${CLEAR}"
+elif [[ "$1" = "publish_windows" ]]                                  ; then fnPublishWindows                                        ; echo -e "${COLOUR_PROGRESS}--- Done${CLEAR}"
+elif [[ "$1" = "sample_code" || "$1" = "samplecode" ]]               ; then fnBuildAndRunSampleCode                                 ; echo -e "${COLOUR_PROGRESS}--- Done${CLEAR}"
+elif [[ "$1" = "build_windows" ]]                                    ; then fnBuild "Debug" ./profiles/windows_x64.profile "${2}"   ; echo -e "${COLOUR_PROGRESS}--- Done${CLEAR}"
+elif [[ "$1" = "build_windows_release" ]]                            ; then fnBuild "Release" ./profiles/windows_x64.profile "${2}" ; echo -e "${COLOUR_PROGRESS}--- Done${CLEAR}"
+elif [[ "$1" = "tests" ]]                                            ; then fnTests                                                 ; echo -e "${COLOUR_PROGRESS}--- Done${CLEAR}"
+elif [[ "$1" = "simpleclitests" ]]                                   ; then fnSimpleCLITests                                        ; echo -e "${COLOUR_PROGRESS}--- Done${CLEAR}"
+elif [[ "$1" = "clean" ]]                                            ; then fnClean                                                 ; echo -e "${COLOUR_PROGRESS}--- Done${CLEAR}"
+elif [[ "$1" = "clean_all" || "$1" = "cleanall" ]]                   ; then fnCleanAll                                              ; echo -e "${COLOUR_PROGRESS}--- Done${CLEAR}"
 else
 	# Backwards-compatibility with original script
 	fnBuild "Debug" "default" "${1}"
