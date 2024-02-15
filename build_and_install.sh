@@ -49,11 +49,33 @@ function fnInstallinstallYamlEditor()
 {
 	echo -e "${COLOUR_PROGRESS}    > Install yq - A commandline yaml editor${CLEAR}"
 	if [ ! -f /usr/local/bin/yq ] ; then
-		echo -e "${COLOUR_PROGRESS}    > Installing yaml editor (yq)${CLEAR}"
+		echo -e "${COLOUR_PROGRESS}    > Already installed${CLEAR}"
+	else
 		sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
 		sudo chmod a+x /usr/local/bin/yq
-		yq --version
 	fi
+	yq --version
+}
+
+function fnInstall_QuantumOriginOnboardFromGithub()
+{
+	mkdir -p ${INSTALL_TARGET}
+	pushd ${INSTALL_TARGET}
+
+	# Retrieve Quantum Origin Onboard release tarball
+	wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.0.2/qo_onboard_ubuntu-20.04_x64_Release-v2.0.2.tgz
+
+	# Ensure that we have the tarball here with us
+	for i in qo_onboard_*.tgz; do
+		if [ ! -f "$i" ]; then
+			echo -e "${COLOUR_ERROR}ERROR: Failed to retrieve qo_onboard_*.gz published tarball. Exiting.${CLEAR}"
+			exit 1
+		fi
+	done
+
+	# Extract files from the tarball
+	tar -zxvf qo_onboard_samples__*.gz --directory ${INSTALL_TARGET}
+	popd
 }
 
 function fnInstallDependencies()
@@ -254,27 +276,6 @@ function fnGetDistro()
 }
 
 
-function fnInstall_QuantumOriginOnboardFromGithub()
-{
-	mkdir -p ${INSTALL_TARGET}
-	pushd ${INSTALL_TARGET}
-
-	# Retrieve Quantum Origin Onboard release tarball
-	wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.0.2/qo_onboard_ubuntu-20.04_x64_Release-v2.0.2.tgz
-
-	# Ensure that we have the tarball here with us
-	for i in qo_onboard_*.tgz; do
-		if [ ! -f "$i" ]; then
-			echo -e "${COLOUR_ERROR}ERROR: Failed to retrieve qo_onboard_*.gz published tarball. Exiting.${CLEAR}"
-			exit 1
-		fi
-	done
-
-	# Extract files from the tarball
-	tar -zxvf qo_onboard_samples__*.gz --directory ${INSTALL_TARGET}
-	popd
-}
-
 # -------------------------------------------------------------------------
 # Usage:  fnSampleCodeCreateTarball <PROJECT_ROOTDIR> <PACKAGE_DIR> <PACKAGE_LIBRARY_BINARIES> <PACKAGE_SAMPLE_BINARIES> <PACKAGE_HTML_DOCUMENTATION>
 #    e.g. fnSampleCodeCreateTarball . ./build/package_sample_code false true
@@ -455,6 +456,8 @@ function fnHelp()
 ###################################
 PROJECTNAME="[QOOnboard]"
 TARGET_NAME=qoonboard
+
+INSTALL_TARGET=${QOO_INSTALL_DIRECTORY:-${HOME}/quantum-origin-onboard}
 
 echo -e "${COLOUR_HEADING1}*** $0 : ${PROJECTNAME} build script ***${CLEAR}"
 
