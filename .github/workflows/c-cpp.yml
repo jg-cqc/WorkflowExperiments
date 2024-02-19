@@ -26,7 +26,9 @@ jobs:
         #token: ${{ secrets.github-ci }}
         #github-token: ${{ secrets.GITHUB_TOKEN }}
         #token: "eyJ2ZXIiOiIyIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYiLCJraWQiOiI0Zl90TGxpNVJQSTlrUGdxUHlmZUl2VXpKUEtfTmZUNlE0b05WM2FNWFdvIn0.eyJzdWIiOiJqZnJ0QDAxZnMxcG0xOHlocDE3MG5rMHlxZnoxbjByXC91c2Vyc1wvZ2l0aHViLWNpIiwic2NwIjoibWVtYmVyLW9mLWdyb3VwczpjaSIsImF1ZCI6ImpmcnRAMDFmczFwbTE4eWhwMTcwbmsweXFmejFuMHIiLCJpc3MiOiJqZnJ0QDAxZnMxcG0xOHlocDE3MG5rMHlxZnoxbjByXC91c2Vyc1wvc2Vhbi5idXJ0b25AY2FtYnJpZGdlcXVhbnR1bS5jb20iLCJpYXQiOjE2NDE5OTEyMTIsImp0aSI6IjViNjNkNjU0LWQxMTMtNGZmOC1iNDMwLTcwZTQ2ZDBkZTBjYyJ9.X9RNylEjm6TEPDNHmEyGo52Eqeo0c_0KCsBqAZgtVelr3VwvSjo5geMbyWCXjHhDFh2-KtyWTw0DzJqvXb9k5cHVWPMluTDnhYYoGQM6jgrH8f6JRpm-fD6QhOU0wSz2wJju-mKcEPLTTd4FqDl3RGWgPtgDK0UY3es0FIjjSNuCuToKIGFAl0ngaB-EfzwCQdkOPLBlOW6M0l-k7Ex5nLGDR59qVRlBFJumyePKWGfmxfne0zDlM_JafWZ1cU9GiSrk0A5gMMms9yAxhENjJUmv_emFI9Rb5n8Gin8GJaJBcm_zEP1dUnsykHs6SGK8pTPaNA0UjFEnVARK1OxNYw"
-        token: ${{ secrets.SECRET_WORKFLOWEXPERIMENTS_RESPOSITORYACCESSTOKEN }}
+        #token: ${{ secrets.SECRET_WORKFLOWEXPERIMENTS_RESPOSITORYACCESSTOKEN }}
+        #token: "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"
+        token: ${{ secrets.SECRET_PERSONALACCESSTOKEN_CONTENTS }}
         tag: "v2.1.0"
         #latest: true
         #fileName: "qo_onboard_ubuntu-20.04_x64_Release-v*"
