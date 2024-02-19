@@ -16,11 +16,12 @@ jobs:
     - uses: robinraju/release-downloader@v1.9
       with:
         repository: "CQCL-DEV/QuantumOrigin.Library.Onboard"
-        #tag: "v2.1.0"
-        latest: true
-        fileName: "qo_onboard_ubuntu-20.04_x64_Release-v*.tgz"
+        tag: "v2.1.0"
+        #latest: true
+        fileName: "qo_onboard_ubuntu-20.04_x64_Release-v*"
         tarBall: true
         extract: true
+        out-file-path: ./qoo_latest
 
     - uses: actions/checkout@v4
     #- name: configure
