@@ -12,6 +12,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Use ReleaseDownloader action from Robin Raju ( https://github.com/marketplace/actions/release-downloader )
+    - uses: robinraju/release-downloader@v1.9
+      with:
+        repository: "owner/repo"
+        #tag: "v2.1.0"
+        latest: true
+        fileName: "qo_onboard_ubuntu-20.04_x64_Release-v*.tgz"
+        tarBall: true
+        extract: true
+
     - uses: actions/checkout@v4
     #- name: configure
     #  run: ./configure

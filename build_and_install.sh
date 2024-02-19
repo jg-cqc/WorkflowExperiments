@@ -57,37 +57,61 @@ function fnInstallinstallYamlEditor()
 	yq --version
 }
 
+#function fnGet_QuantumOriginOnboardFromGithub()
+#{
+#	# Retrieve Quantum Origin Onboard release tarball
+#	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.0.2/qo_onboard_ubuntu-20.04_x64_Release-v2.0.2.tgz
+#	wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_ubuntu-20.04_x64_Release-v2.1.0.tgz
+#
+#	# Avalable files might be...
+#	#    qo_onboard_devbin_ubuntu-20.04_armv8_Release-v2.1.0.tgz
+#	#    qo_onboard_devbin_ubuntu-20.04_x64_Debug-v2.1.0.tgz
+#	#    qo_onboard_devbin_ubuntu-20.04_x64_Release-v2.1.0.tgz
+#	#    qo_onboard_tools_deb_ubuntu-20.04_armv8_Release-v2.1.0.tgz
+#	#    qo_onboard_tools_deb_ubuntu-20.04_x64_Debug-v2.1.0.tgz
+#	#    qo_onboard_tools_deb_ubuntu-20.04_x64_Release-v2.1.0.tgz
+#	#    qo_onboard_ubuntu-20.04_armv8_Release-v2.1.0.tgz
+#	#    qo_onboard_ubuntu-20.04_x64_Debug-v2.1.0.tgz
+#	#    qo_onboard_ubuntu-20.04_x64_Release-v2.1.0.tgz
+#	#    quantum_origin_onboard_api_docs-v2.1.0.tgz
+#}
+
+#function fnGet_QuantumOriginOnboardFromGithub()
+#{
+#	# Retrieve the x64 release tarball from the latest Quantum Origin Onboard release...
+#	wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/latest/qo_onboard_ubuntu-20.04_x64_Release-v*..tgz
+#
+#	# This doesn't work using wget
+#	# Even...
+#	#    curl --verbose "https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/latest"
+#	# ...returns a 404.
+#}
+
+#function fnInstall_QuantumOriginOnboardFromGithub()
+#{
+#	mkdir -p ${INSTALL_TARGET}
+#	pushd ${INSTALL_TARGET}
+#
+#	fnGet_QuantumOriginOnboardFromGithub
+#
+#	# Ensure that we have the tarball here with us
+#	for i in qo_onboard_*.tgz; do
+#		if [ ! -f "$i" ]; then
+#			echo -e "${COLOUR_ERROR}ERROR: Failed to retrieve qo_onboard_*.gz published tarball. Exiting.${CLEAR}"
+#			exit 1
+#		fi
+#	done
+#
+#	# Extract files from the tarball
+#	tar -zxvf qo_onboard_samples__*.gz --directory ${INSTALL_TARGET}
+#	popd
+#}
+
 function fnInstall_QuantumOriginOnboardFromGithub()
 {
-	mkdir -p ${INSTALL_TARGET}
-	pushd ${INSTALL_TARGET}
-
-	# Retrieve Quantum Origin Onboard release tarball
-	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.0.2/qo_onboard_ubuntu-20.04_x64_Release-v2.0.2.tgz
-	wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_ubuntu-20.04_x64_Release-v2.1.0.tgz
-
-	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_devbin_ubuntu-20.04_armv8_Release-v2.1.0.tgz
-	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_devbin_ubuntu-20.04_x64_Debug-v2.1.0.tgz
-	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_devbin_ubuntu-20.04_x64_Release-v2.1.0.tgz
-	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_tools_deb_ubuntu-20.04_armv8_Release-v2.1.0.tgz
-	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_tools_deb_ubuntu-20.04_x64_Debug-v2.1.0.tgz
-	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_tools_deb_ubuntu-20.04_x64_Release-v2.1.0.tgz
-	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_ubuntu-20.04_armv8_Release-v2.1.0.tgz
-	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_ubuntu-20.04_x64_Debug-v2.1.0.tgz
-	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/qo_onboard_ubuntu-20.04_x64_Release-v2.1.0.tgz
-	#wget https://github.com/CQCL-DEV/QuantumOrigin.Library.Onboard/releases/download/v2.1.0/quantum_origin_onboard_api_docs-v2.1.0.tgz
-
-	# Ensure that we have the tarball here with us
-	for i in qo_onboard_*.tgz; do
-		if [ ! -f "$i" ]; then
-			echo -e "${COLOUR_ERROR}ERROR: Failed to retrieve qo_onboard_*.gz published tarball. Exiting.${CLEAR}"
-			exit 1
-		fi
-	done
-
-	# Extract files from the tarball
-	tar -zxvf qo_onboard_samples__*.gz --directory ${INSTALL_TARGET}
-	popd
+	# Do nothing... we have already pulled and extracted the latest release of the Quantum Origin Onboard library in github workflow using "robinraju/release-downloader@v1.9"
+	# Let's just check that it now exists...
+	# TODO
 }
 
 function fnInstallDependencies()
