@@ -13,15 +13,16 @@ jobs:
 
     steps:
     # Use ReleaseDownloader action from Robin Raju ( https://github.com/marketplace/actions/release-downloader )
-    - uses: robinraju/release-downloader@v1.9
+    - uses: robinraju/release-downloader@v1.8
       with:
         repository: "CQCL-DEV/QuantumOrigin.Library.Onboard"
         tag: "v2.1.0"
         #latest: true
-        fileName: "qo_onboard_ubuntu-20.04_x64_Release-v*"
-        tarBall: true
-        extract: true
-        out-file-path: ./qoo_latest
+        #fileName: "qo_onboard_ubuntu-20.04_x64_Release-v*"
+        fileName: "qo_onboard_ubuntu-20.04_x64_Release-v2.1.0.tgz"
+        #tarBall: true
+        #extract: true
+        #out-file-path: ./qoo_latest
 
     - uses: actions/checkout@v4
     #- name: configure
