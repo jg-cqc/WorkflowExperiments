@@ -13,7 +13,7 @@ jobs:
 
     steps:
     # Use ReleaseDownloader action from Robin Raju ( https://github.com/marketplace/actions/release-downloader )
-    - uses: robinraju/release-downloader@v1.8
+    - uses: robinraju/release-downloader@v1.9
       with:
         repository: "CQCL-DEV/QuantumOrigin.Library.Onboard"
 
