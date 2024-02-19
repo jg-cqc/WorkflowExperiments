@@ -517,3 +517,7 @@ else
 	# Backwards-compatibility with original script
 	fnBuild "Debug" "default" "${1}"
 fi
+
+
+# Yes/No, Pass/Fail, Tick/Cross, characters: '✅' : '❌'
+# (Not sure what font or characterset this is. TreePad doesn't like it)
