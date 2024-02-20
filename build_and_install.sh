@@ -338,14 +338,20 @@ function fnSampleCodeCreateTarball()
 
 	if "${PACKAGE_LIBRARY_BINARIES}"
 	then
+		#SOURCE_PATH_LIBS=${PROJECT_ROOTDIR}/build/src/qo_onboard_c
+		#SOURCE_PATH_INCLUDES=${PROJECT_ROOTDIR}/build_conan_package/include
+
+		SOURCE_PATH_LIBS=${PROJECT_ROOTDIR}/qoo_latest/lib
+		SOURCE_PATH_INCLUDES=${PROJECT_ROOTDIR}/qoo_latest/include
+
 		echo -e "${COLOUR_PROGRESS}--- Packaging library binaries...${CLEAR}"
 		mkdir -p "${PACKAGE_DIR}/lib/"
-		cp ${PROJECT_ROOTDIR}/build/src/qo_onboard_c/libqo_onboard_c.a                   ${PACKAGE_DIR}/lib
-		cp ${PROJECT_ROOTDIR}/build/src/qo_onboard_c/libqo_onboard_library.so            ${PACKAGE_DIR}/lib
-		cp ${PROJECT_ROOTDIR}/build/src/qo_onboard_c/libqo_onboard_library.so.2.0.2      ${PACKAGE_DIR}/lib
+		cp ${SOURCE_PATH_LIBS}/libqo_onboard_c.a                   ${PACKAGE_DIR}/lib
+		cp ${SOURCE_PATH_LIBS}/libqo_onboard_library.so            ${PACKAGE_DIR}/lib
+		cp ${SOURCE_PATH_LIBS}/libqo_onboard_library.so.2.0.2      ${PACKAGE_DIR}/lib
 
 		mkdir -p "${PACKAGE_DIR}/include/qo_onboard/"
-		cp -r  ${PROJECT_ROOTDIR}/build_conan_package/include/qo_onboard/qo_onboard_c.h ${PACKAGE_DIR}/include/qo_onboard/
+		cp -r  ${SOURCE_PATH_INCLUDES}/qo_onboard/qo_onboard_c.h ${PACKAGE_DIR}/include/qo_onboard/
 	fi
 
 	if "${PACKAGE_HTML_DOCUMENTATION}"
