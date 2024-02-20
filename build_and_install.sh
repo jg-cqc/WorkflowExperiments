@@ -109,6 +109,7 @@ function fnInstallinstallYamlEditor()
 
 function fnInstall_QuantumOriginOnboardFromGithub()
 {
+	echo -e "${COLOUR_PROGRESS}    > Install QuantumOriginOnboard from Github${CLEAR}"
 	# Do nothing... we have already pulled and extracted the latest release of the Quantum Origin Onboard library in github workflow using "robinraju/release-downloader@v1.9"
 	# Let's just check that it now exists...
 	# TODO
