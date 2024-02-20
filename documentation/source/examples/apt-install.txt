@@ -1,0 +1,17 @@
+user@ubuntu:~/$ sudo apt install ./qo-kernel-reseed.deb
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+Note, selecting 'qo-kernel-reseed' instead of './qo-kernel-reseed.deb'
+The following NEW packages will be installed
+    qo-kernel-reseed
+0 to upgrade, 1 to newly install, 0 to remove and 0 not to upgrade.
+Need to get 0 B/398 kB of archives.
+After this operation, 1028 kB of additional disk space will be used.
+Get:1 /home/user/qo-kernel-reseed.deb qo-kernel-reseed amd64 1.2.0 [398 kB]
+Selecting previously unselected package qo-kernel-reseed.
+(Reading database ... 196161 files and directories currently installed.)
+Preparing to unpack .../qo-kernel-reseed.deb ...
+Unpacking qo-kernel-reseed (1.2.0) ...
+Setting up qo-kernel-reseed (1.2.0) ...
+Created symlink /etc/systemd/system/sysinit.target.wants/qo-kernel-reseed.service → /lib/systemd/system/qo-kernel-reseed.service.

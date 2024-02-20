@@ -1,0 +1,32 @@
+[user@rhel ~]$ sudo yum install ./qo-kernel-reseed.rpm
+============================================================================================
+ Package                          Architecture   Version         Repository            Size
+============================================================================================
+Installing:
+ qo_onboard-kernel-reseed         x86_64         1.2.0-1         @commandline         465 k
+
+Transaction Summary
+============================================================================================
+Install  1 Package
+
+Total size: 465 k
+Installed size: 1.3 M
+Is this ok [Y/n]: Y
+Downloading Packages:
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Running scriptlet: qo_onboard-kernel-reseed-1.2.0-1.x86_64                            1/1
+  Preparing        :                                                                    1/1
+  Running scriptlet: qo_onboard-kernel-reseed-1.2.0-1.x86_64                            1/1
+  Installing       : qo_onboard-kernel-reseed-1.2.0-1.x86_64                            1/1
+  Running scriptlet: qo_onboard-kernel-reseed-1.2.0-1.x86_64                            1/1
+
+  Verifying        : qo_onboard-kernel-reseed-1.2.0-1.x86_64                            1/1
+
+Installed:
+  qo_onboard-kernel-reseed-1.2.0-1.x86_64
+
+Complete!

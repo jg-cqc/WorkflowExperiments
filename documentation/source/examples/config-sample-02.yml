@@ -1,0 +1,17 @@
+generator:
+  logging:
+    level: info
+    mode: file
+    path: /var/log/onboard
+
+  cache:
+    type: synchronous-caching
+    size: 3973
+    prefill: 1024
+    refill_at: 1024
+
+  wsr:
+    type: RDSEED
+
+  license: >
+    hK [omitted ...]

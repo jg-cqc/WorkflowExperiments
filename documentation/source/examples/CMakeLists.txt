@@ -1,0 +1,2 @@
+add_executable(SimpleUseCase SimpleUseCase.cpp)
+target_link_libraries(SimpleUseCase PRIVATE qo_onboard)
