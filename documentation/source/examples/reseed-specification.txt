@@ -1,0 +1,4 @@
+kernel_reseed:
+    reseed_amount: #[> Amount of bytes to seed at each interval]
+    reseed_time: #[> Interval between reseeds]
+    force_reseed: #[true | false]

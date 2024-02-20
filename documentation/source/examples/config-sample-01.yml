@@ -1,0 +1,26 @@
+logging:
+  level: info
+  mode: file
+  path: /var/log/onboard
+
+cache:
+  type: synchronous-caching
+  size: 3973
+  prefill: 1024
+  refill_at: 1024
+
+wsr:
+  type: RDSEED
+
+license: >
+  hK [omitted ...]
+
+seed:
+  signature: >
+    Ag [omitted ...]
+  content: >
+    fT [omitted ...]
+  signing_key: |
+    -----BEGIN PUBLIC KEY-----
+    MI [omitted ...]
+    -----END PUBLIC KEY-----

@@ -50,3 +50,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+!qoo_latest/include/qo_onboard/qo_onboard_c.h
+!qoo_latest/lib/libqo_onboard_library.so
+!qoo_latest/lib/libqo_onboard.a
+!qoo_latest/lib/libqo_onboard_c.a
+

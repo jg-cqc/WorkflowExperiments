@@ -1,0 +1,21 @@
+logging:
+  level: info
+  mode: file
+  path: /var/log/onboard-reseed
+
+cache:
+  type: synchronous-caching
+  size: 3973
+  prefill: 1024
+  refill_at: 1024
+
+wsr:
+  type: RDSEED
+
+kernel_reseed:
+  reseed_amount: 512
+  reseed_time: 10
+  force_reseed: true
+
+license: >
+  hK [omitted ...]

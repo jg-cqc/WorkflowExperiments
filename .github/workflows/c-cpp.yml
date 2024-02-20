@@ -1,0 +1,23 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    #- name: configure
+    #  run: ./configure
+    - name: make install_deps
+      run: make install_deps
+    - name: make build
+      run: make build
+    - name: make sample_code
+      run: make sample_code

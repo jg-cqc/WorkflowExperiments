@@ -1,0 +1,147 @@
+#include <ctype.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "qo_hexdump.h"
+#include "qo_onboard/qo_onboard_c.h"
+
+#define BUFFER_SIZE 400U
+
+#define ONBOARD_CONFIG_SEED_SIGNATURE_MAXLEN (512) // quantum_seed_signature_base64.txt    176 bytes
+#define ONBOARD_CONFIG_SEED_CONTENT_MAXLEN (20480) // quantum_seed_content_base64.txt      10888 bytes
+
+unsigned char szSampleSeedSignature[] =
+       {0x00,0x40,0x66,0x41,0x3a,0xb3,0x0a,0xfb,0xe7,0xb2,0x8d,0x8c,0x55,0x38,0x97,0x71,
+        0xaf,0xbf,0x9d,0x3e,0x72,0x7e,0xc3,0xa2,0x48,0xca,0x10,0x24,0xc9,0x31,0xf0,0xb4,
+        0xa8,0x6f,0x6b,0x6a,0x74,0xfe,0xbf,0x08,0xde,0xec,0x6f,0x7e,0x42,0x15,0xfb,0x31,
+        0xdf,0x3c,0xf8,0xe0,0x70,0x6b,0x8c,0x65,0x16,0xb7,0xce,0x2c,0x00,0xbe,0x34,0xa2,
+        0xb1,0x74,0x01,0x1d,0xce,0x04,0x98,0x71,0x67,0x23,0x78,0xad,0xe5,0x69,0xcd,0xa8,
+        0x4f,0xa6,0x24,0x28,0xbc,0xea,0x96,0x05,0x47,0x21,0x80,0xa8,0x7c,0xdd,0xc2,0xde,
+        0x99,0x3b,0x23,0xe9,0x8c,0xde,0x33,0xbd,0x5f,0x80,0x3f,0xc2,0xc0,0xd7,0xe0,0x00,
+        0xb9,0xce,0x11,0x0e,0x91,0x4c,0x8c,0x56,0x53,0x8d,0xb8,0x7b,0xb2,0xc0,0xb5,0x82,
+        0xa7,0xb3,0xd9,0xc0};
+
+unsigned char szSampleSeedContent[] =
+        {0x54,0x68,0x65,0x20,0x73,0x77,0x61,0x6c,0x6c,0x6f,0x77,0x20,0x6d,0x61,0x79,0x20,
+         0x66,0x6c,0x79,0x20,0x73,0x6f,0x75,0x74,0x68,0x20,0x77,0x69,0x74,0x68,0x20,0x74,
+         0x68,0x65,0x20,0x73,0x75,0x6e,0x20,0x6f,0x72,0x20,0x74,0x68,0x65,0x20,0x68,0x6f,
+         0x75,0x73,0x65,0x20,0x6d,0x61,0x72,0x74,0x69,0x6e,0x20,0x6f,0x72,0x20,0x74,0x68,
+         0x65,0x20,0x70,0x6c,0x75,0x6d,0x62,0x65,0x72,0x20,0x6d,0x61,0x79,0x20,0x73,0x65,
+         0x65,0x6b,0x20,0x77,0x61,0x72,0x6d,0x65,0x72,0x20,0x63,0x6c,0x69,0x6d,0x65,0x73,
+         0x20,0x69,0x6e,0x20,0x77,0x69,0x6e,0x74,0x65,0x72,0x20,0x79,0x65,0x74,0x20,0x74,
+         0x68,0x65,0x73,0x65,0x20,0x61,0x72,0x65,0x20,0x6e,0x6f,0x74,0x20,0x73,0x74,0x72,
+         0x61,0x6e,0x67,0x65,0x72,0x73,0x20,0x74,0x6f,0x20,0x6f,0x75,0x72,0x20,0x6c,0x61,
+         0x6e,0x64,0x2e,0x0a,0x41,0x72,0x65,0x20,0x79,0x6f,0x75,0x20,0x73,0x75,0x67,0x67,
+         0x65,0x73,0x74,0x69,0x6e,0x67,0x20,0x63,0x6f,0x63,0x6f,0x6e,0x75,0x74,0x73,0x20,
+         0x6d,0x69,0x67,0x72,0x61,0x74,0x65,0x3f,0x0a,0x4e,0x6f,0x74,0x20,0x61,0x74,0x20,
+         0x61,0x6c,0x6c,0x2c,0x20,0x74,0x68,0x65,0x79,0x20,0x63,0x6f,0x75,0x6c,0x64,0x20,
+         0x62,0x65,0x20,0x63,0x61,0x72,0x72,0x69,0x65,0x64,0x2e,0x0a,0x57,0x68,0x61,0x74,
+         0x2c,0x20,0x61,0x20,0x73,0x77,0x61,0x6c,0x6c,0x6f,0x77,0x20,0x63,0x61,0x72,0x72,
+         0x79,0x69,0x6e,0x67,0x20,0x61,0x20,0x63,0x6f,0x63,0x6f,0x6e,0x75,0x74,0x3f,0x0a};
+
+
+// Forward declaration to ensure that the interface function is correctly defined.
+static tQO_LOGGER_CALLBACK_FN my_qo_onboard_logger_callback;
+
+//--------------------------------------------------------------
+// Logger callback
+//--------------------------------------------------------------
+static void my_qo_onboard_logger_callback(const tONBOARD_LOGLEVEL logLevel, tQO_ONBOARD_RESULT errorCode, const char *szMsg, size_t msgLen)
+{
+    // Store or present the inbound message somewhere.
+    switch(logLevel)
+    {
+        case ONBOARD_LOGLEVEL_NONE     : break;
+        case ONBOARD_LOGLEVEL_CRITICAL : fprintf(stderr, "[qo_onboard] critical: status=%d (%s)\n", errorCode, szMsg); break;
+        case ONBOARD_LOGLEVEL_ERROR    : fprintf(stderr, "[qo_onboard] error: status=%d (%s)\n", errorCode, szMsg); break;
+        case ONBOARD_LOGLEVEL_WARNING  : fprintf(stderr, "[qo_onboard] warn: status=%d (%s)\n", errorCode, szMsg); break;
+        case ONBOARD_LOGLEVEL_INFO     : fprintf(stderr, "[qo_onboard] info: status=%d (%s)\n", errorCode, szMsg); break;
+        case ONBOARD_LOGLEVEL_DEBUG    : fprintf(stderr, "[qo_onboard] debug: status=%d (%s)\n", errorCode, szMsg); break;
+        default:
+        case ONBOARD_LOGLEVEL_TRACE    : fprintf(stderr, "[qo_onboard] trace: status=%d (%s)\n", errorCode, szMsg); break;
+    }
+}
+
+//--------------------------------------------------------------
+// Main
+//--------------------------------------------------------------
+int main(int argc, char **argv)
+{
+    bool verboseMode          = false;
+    tQO_ONBOARD_CTX *pOnboard = NULL;
+    uint32_t bytesRequested   = 0xFFFFFFFF;
+    tQO_ONBOARD_RESULT onboardResult;
+    unsigned char resultBuffer[BUFFER_SIZE];
+    size_t bytesSupplied;
+    tONBOARD_CONFIG *pOnboardConfig = NULL;
+    int ret = 0;
+
+    bytesRequested = 32;
+
+    ////////////////////////////////////
+    // Initialise Onboard
+    ////////////////////////////////////
+    onboard_set_logging_callback(my_qo_onboard_logger_callback);
+
+    pOnboardConfig = onboard_setopt_init();
+    if (!pOnboardConfig) { ret = ERC_UNSPECIFIED_ERROR; goto error1; }
+    ret = onboard_setopt_int  (pOnboardConfig, ONBOARD_OPT_LOGGING_MODE    , ONBOARD_LOGMODE_STDERR    ); if (ret) { goto error1; }
+    ret = onboard_setopt_int  (pOnboardConfig, ONBOARD_OPT_LOGGING_LEVEL   , ONBOARD_LOGLEVEL_ERR      ); if (ret) { goto error1; }
+    ret = onboard_setopt_int  (pOnboardConfig, ONBOARD_OPT_CACHE_TYPE      , ONBOARD_CACHETYPE_CACHING ); if (ret) { goto error1; } // e.g. [caching] or [none]
+    ret = onboard_setopt_int  (pOnboardConfig, ONBOARD_OPT_CACHE_SIZE      , 10240                     ); if (ret) { goto error1; } // e.g. [1048576]
+    ret = onboard_setopt_int  (pOnboardConfig, ONBOARD_OPT_CACHE_PREFILL   , 10240                     ); if (ret) { goto error1; } // e.g. [128]
+    ret = onboard_setopt_int  (pOnboardConfig, ONBOARD_OPT_CACHE_REFILL_AT , 2048                      ); if (ret) { goto error1; } // e.g. [1024]
+    ret = onboard_setopt_int  (pOnboardConfig, ONBOARD_OPT_WSR_TYPE        , ONBOARD_WSRTYPE_RDSEED    ); if (ret) { goto error1; } // e.g. [FILE]
+    ret = onboard_setopt_bytes(pOnboardConfig, ONBOARD_OPT_SEED_SIGNATURE  , (uint8_t *)szSampleSeedSignature, sizeof(szSampleSeedSignature) ); if (ret) { goto error1; }
+    ret = onboard_setopt_bytes(pOnboardConfig, ONBOARD_OPT_SEED_CONTENT    , (uint8_t *)szSampleSeedContent  , sizeof(szSampleSeedContent  ) ); if (ret) { goto error1; }
+
+    pOnboard = onboard_init_from_config_struct(pOnboardConfig);
+    if (pOnboard == NULL)
+    {
+        ret = onboard_get_error_code();
+        const char *szOnboardError = onboard_get_error_description();
+        fprintf(stderr, "ERROR: Failed to initialize Onboard with onboard_init_from_config_struct() (OnboardErrorMsg=%s)\n", szOnboardError?szOnboardError:"Unspecified");
+        goto error1;
+    }
+    // The pOnboardConfig structure is no longer needed, and can be destroyed.
+    onboard_setopt_cleanup(pOnboardConfig);
+    pOnboardConfig = NULL;
+
+    ////////////////////////////////////
+    // Get Randomness
+    ////////////////////////////////////
+    bytesSupplied = 0;
+    onboardResult = onboard_get_randomness(pOnboard, resultBuffer, bytesRequested, &bytesSupplied);
+    if (onboardResult != 0)
+    {
+        ret = onboard_get_error_code();
+        const char *szOnboardError = onboard_get_error_description();
+        fprintf(stderr, "ERROR: onboard_get_randomness failed with onboardResult=%d (OnboardErrorMsg=%s)\n", onboardResult, szOnboardError?szOnboardError:"Unspecified");
+        onboard_destroy(pOnboard);
+        goto error1;
+    }
+
+    ////////////////////////////////////
+    // Print results
+    ////////////////////////////////////
+    for (size_t ii = 0; ii < bytesSupplied; ii++)
+    {
+        putc(resultBuffer[ii], stdout);
+    }
+
+    ret = ERC_OK;
+
+error1:
+    if (pOnboardConfig)
+    {
+        onboard_setopt_cleanup(pOnboardConfig);
+        pOnboardConfig = NULL;
+    }
+    onboard_destroy(pOnboard);
+    onboard_clear_logging_callback();
+
+    return ret;
+}

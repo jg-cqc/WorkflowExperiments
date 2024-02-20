@@ -1,0 +1,21 @@
+logging:
+  mode: #[daily_file | file | stderr | stdout | syslog]
+  level: #[trace | debug | info | warn | err | critical | off]
+  #<mode = file> path: [> The file to log to]
+  #<mode = daily_file> path: [> The directory to log to]
+
+cache:
+  type: #[none | synchronous-caching | caching]
+  #<type != none> size: [> Size of the cache, in bytes]
+  #<type != none> prefill: [> Amount of bytes to generate at startup]
+  #<type != none> refill_at: [> The minimum number of bytes it will try and keep in the cache]
+
+wsr:
+  type: #[ FILE | RDSEED | CALLBACK ]
+  #<type = file> path: [> Path to the weak-source of randomness file]
+
+seed:
+  signature: >
+    #[> The seed signature, base64-encoded]
+  content: >
+    #[> The seed, base64-encoded]
